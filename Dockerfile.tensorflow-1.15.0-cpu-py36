@@ -1,0 +1,65 @@
+ARG BASE_CONTAINER=lehrig/base-py36-notebook
+FROM $BASE_CONTAINER
+
+ARG PIPELINE_SDK_PACKAGE=https://storage.googleapis.com/ml-pipeline/release/1.0.4/kfp.tar.gz
+
+ENV IBM_POWERAI_LICENSE_ACCEPT=yes
+ENV NB_PREFIX /
+
+USER root
+
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+    build-essential \
+    g++ \
+    libssl-dev \
+    libffi-dev \
+    libblas-dev \
+    liblapack-dev \
+    libatlas-base-dev \
+    gfortran \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+USER $NB_UID
+
+WORKDIR $HOME
+
+RUN conda config --system --prepend channels https://public.dhe.ibm.com/ibmdl/export/pub/software/server/ibm-ai/conda/
+
+RUN conda install --quiet --yes \
+    ##################
+    # conda packages
+    'tensorflow=1.15.4' \
+    'notebook' \
+    'jupyterlab' \
+    && \
+    conda clean --all -f -y && \
+    jupyter notebook --generate-config && \
+    rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
+    rm -rf /home/$NB_USER/.cache/yarn && \
+    pip install --quiet --no-cache-dir \
+    ##################
+    # pip packages
+    ${PIPELINE_SDK_PACKAGE} \
+    ##################
+    && \
+    ##################
+    # Cleanup
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+EXPOSE 8888
+
+# Copy local files as late as possible to avoid cache busting
+COPY jupyter_notebook_config.py /etc/jupyter/
+
+# Fix permissions on /etc/jupyter as root
+USER root
+RUN fix-permissions /etc/jupyter/
+
+# Switch back to jovyan to avoid accidental container runs as root
+USER $NB_UID
+
+CMD ["sh","-c", "jupyter notebook --notebook-dir=/home/jovyan --ip=0.0.0.0 --no-browser --allow-root --port=8888 --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*' --NotebookApp.base_url=${NB_PREFIX}"]
+
+

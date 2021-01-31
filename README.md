@@ -1,4 +1,25 @@
-# kubeflow-ppc64le-images
+# Kubeflow Notebook Image for ppc64le
+
+Notebook images for ppc64le (IBM Power processor architecture) compliant with [Kubeflow Notebook Server](https://www.kubeflow.org/docs/notebooks/).
+
+### Features
+- Jupyter Lab incl. LaTeX support
+- Tensorflow / pyTorch
+- Kubeflow pipelines SDK
+- [Kale](https://github.com/kubeflow-kale/kale) integrated in Juypter Lab
+- Package management via [Conda](https://docs.conda.io)
+- Fully OpenShift-compliant (rootless support), kudos to [Graham Dumpleton](https://www.openshift.com/blog/jupyter-on-openshift-part-6-running-as-an-assigned-user-id)
+
+### Tested Versions
+- Kubeflow v1.2.0+
+- OpenShift 4.5+
+- Tensorflow 1.15.4+ or pyTorch 1.2.0+
+
+### Pre-Build Images
+Go to my [Docker.io page](https://hub.docker.com/u/lehrig) (includes Notebook and general Kubeflow images for ppc64le).
+
+Notebook images:
+- [TensorFlow 1.15.4 / CPU / Python 3.6](https://hub.docker.com/r/lehrig/tensorflow-1.15.4-cpu-py3.6-notebook)
 
 ### Building Images
 
@@ -7,12 +28,12 @@ git clone https://github.com/lehrig/kubeflow-ppc64le-images
 cd kubeflow-ppc64le-images
 
 export PYTHON_VERSION=3.6
-export TENSORFLOW_VERSION=1.15.0
+export TENSORFLOW_VERSION=1.15.4
 
 export TAG=v1.2.0.ppc64le
 export BASE_IMAGE=lehrig/base-py$PYTHON_VERSION-notebook:$TAG
 export IMAGE=lehrig/tensorflow-$TENSORFLOW_VERSION-cpu-py$PYTHON_VERSION-notebook:$TAG
 
 podman build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $BASE_IMAGE -f Dockerfile.base .
-podman build --build-arg BASE_CONTAINER=$BASE_IMAGE -t $IMAGE -f Dockerfile.tensorflow-1.15.0-cpu-py36 .
+podman build --build-arg BASE_CONTAINER=$BASE_IMAGE -t $IMAGE -f Dockerfile.tensorflow-cpu .
 ```

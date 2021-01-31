@@ -1,0 +1,127 @@
+ARG BASE_CONTAINER=lehrig/base-py3.6-notebook:v1.2.0.ppc64le
+FROM $BASE_CONTAINER
+
+ARG PIPELINE_SDK_PACKAGE=https://storage.googleapis.com/ml-pipeline/release/1.0.4/kfp.tar.gz
+ARG TENSORFLOW_VERSION=1.15.4
+
+ENV IBM_POWERAI_LICENSE_ACCEPT=yes
+ENV NB_PREFIX /
+
+USER root
+
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+    build-essential \
+    g++ \
+    libssl-dev \
+    libffi-dev \
+    libblas-dev \
+    liblapack-dev \
+    libatlas-base-dev \
+    gfortran \
+    vim-tiny \
+    git \
+    inkscape \
+    libsm6 \
+    libxext-dev \
+    libxrender1 \
+    lmodern \
+    netcat \
+    # ---- nbconvert dependencies ----
+    texlive-xetex \
+    texlive-fonts-recommended \
+    texlive-plain-generic \
+    # ----
+    tzdata \
+    unzip \
+    nano-tiny \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+USER $NB_UID
+
+WORKDIR $HOME
+
+RUN conda config --system --set channel_priority false && \
+    conda config --system --prepend channels conda-forge && \
+    conda config --system --prepend channels https://opence.mit.edu/ && \
+    conda config --system --prepend channels https://public.dhe.ibm.com/ibmdl/export/pub/software/server/ibm-ai/conda/ && \
+    conda install --quiet --yes \
+    ##################
+    # conda packages
+    'tensorflow='$TENSORFLOW_VERSION'' \
+    'keras' \
+    'py-xgboost-cpu' \
+    'notebook' \
+    'jupyterlab' \
+    'beautifulsoup4' \
+    'conda-forge::blas=*=openblas' \
+    'bokeh' \
+    'bottleneck' \
+    'cloudpickle' \
+    'cython' \
+    'dask' \
+    'dill' \
+    'h5py' \
+    'ipywidgets' \
+    'ipympl'\
+    'matplotlib-base' \
+    'nodejs' \
+    'numba' \
+    'numexpr' \
+    'pandas' \
+    'patsy' \
+    'protobuf' \
+    'pytables' \
+    'scikit-image' \
+    'scikit-learn' \
+    'scipy' \
+    'seaborn' \
+    'sqlalchemy' \
+    'statsmodels' \
+    'sympy' \
+    'vincent' \
+    'widgetsnbextension'\
+    'xlrd' \
+    && \
+    conda clean --all -f -y && \
+    jupyter notebook --generate-config && \
+    rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
+    rm -rf /home/$NB_USER/.cache/yarn && \
+    pip install --quiet --no-cache-dir \
+    ##################
+    # pip packages
+    ${PIPELINE_SDK_PACKAGE} \
+    kubeflow-kale \
+    ##################
+    && \
+    ##################
+    # Cleanup
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+# Import matplotlib the first time to build the font cache.
+ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
+
+RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
+    fix-permissions "/home/${NB_USER}"
+
+EXPOSE 8888
+
+# Copy local files as late as possible to avoid cache busting
+COPY jupyter_notebook_config.py /etc/jupyter/
+
+# Copy local files as late as possible to avoid cache busting
+COPY start.sh /usr/local/bin/
+
+# Fix permissions on /etc/jupyter as root
+USER root
+
+RUN fix-permissions /etc/jupyter/
+RUN fix-permissions /usr/local/bin/
+RUN chmod +x /usr/local/bin/start.sh
+
+# Switch back to jovyan to avoid accidental container runs as root
+USER $NB_UID
+
+CMD ["start.sh"]
+

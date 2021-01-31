@@ -79,7 +79,6 @@ RUN cd /tmp && \
     /bin/bash Miniconda3-py37_${MINICONDA_VERSION}-Linux-ppc64le.sh -f -b -p $CONDA_DIR && \
     rm -rf Miniconda3-py37_${MINICONDA_VERSION}-Linux-ppc64le.sh && \
     echo "conda ${CONDA_VERSION}" >> $CONDA_DIR/conda-meta/pinned && \
-#    conda config --system --prepend channels conda-forge && \
     conda config --system --set auto_update_conda false && \
     conda config --system --set show_channel_urls true && \
     conda config --system --set channel_priority strict && \

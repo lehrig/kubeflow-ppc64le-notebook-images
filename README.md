@@ -1,4 +1,4 @@
-# Kubeflow Notebook Image for ppc64le
+# Kubeflow Notebook Images for ppc64le
 
 Notebook images for ppc64le (IBM Power processor architecture) compliant with [Kubeflow Notebook Server](https://www.kubeflow.org/docs/notebooks/).
 

@@ -12,14 +12,14 @@ Notebook images for ppc64le (IBM Power processor architecture) compliant with [K
 
 ### Tested Versions
 - Kubeflow v1.2.0+
-- OpenShift 4.5+
-- Tensorflow 1.15.4+ or pyTorch 1.2.0+
+- OpenShift v4.5+
+- Tensorflow v1.15.4+ or pyTorch v1.2.0+
 
 ### Pre-Build Images
 Go to my [Docker.io page](https://hub.docker.com/u/lehrig) (includes Notebook and general Kubeflow images for ppc64le).
 
 Notebook images:
-- [TensorFlow 1.15.4 / CPU / Python 3.6](https://hub.docker.com/r/lehrig/tensorflow-1.15.4-cpu-py3.6-notebook)
+- [Kubeflow v1.2.0 / TensorFlow v1.15.4 / CPU / Python v3.6](https://hub.docker.com/r/lehrig/tensorflow-1.15.4-cpu-py3.6-notebook)
 
 ### Building Images
 

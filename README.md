@@ -4,7 +4,7 @@ Notebook images for ppc64le (IBM Power processor architecture) compliant with [K
 
 ### Features
 - Jupyter Lab incl. LaTeX support
-- Tensorflow / pyTorch
+- TensorFlow / PyTorch
 - Kubeflow pipelines SDK
 - [Kale](https://github.com/kubeflow-kale/kale) integrated in Juypter Lab
 - Package management via [Conda](https://docs.conda.io)

@@ -10,11 +10,6 @@ Notebook images for ppc64le (IBM Power processor architecture) compliant with [K
 - Package management via [Conda](https://docs.conda.io)
 - Fully OpenShift-compliant (rootless support), kudos to [Graham Dumpleton](https://www.openshift.com/blog/jupyter-on-openshift-part-6-running-as-an-assigned-user-id)
 
-### Tested Versions
-- Kubeflow v1.2.0+
-- OpenShift v4.5+
-- Tensorflow v1.15.4+ or pyTorch v1.2.0+
-
 ### Pre-Build Images
 Go to my [Docker.io page](https://hub.docker.com/u/lehrig) (includes Notebook and general Kubeflow images for ppc64le).
 

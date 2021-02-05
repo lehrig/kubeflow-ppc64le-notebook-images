@@ -6,7 +6,8 @@ Notebook images for ppc64le (IBM Power processor architecture) compliant with [K
 - Jupyter Lab incl. LaTeX support
 - TensorFlow / PyTorch
 - Kubeflow pipelines SDK
-- [Kale](https://github.com/kubeflow-kale/kale) integrated in Juypter Lab
+- [Elyra](https://github.com/elyra-ai/elyra) integrated in Jupyter Lab
+- [Kale](https://github.com/kubeflow-kale/kale) integrated in Jupyter Lab
 - Package management via [Conda](https://docs.conda.io)
 - Fully OpenShift-compliant (rootless support), kudos to [Graham Dumpleton](https://www.openshift.com/blog/jupyter-on-openshift-part-6-running-as-an-assigned-user-id)
 
@@ -14,7 +15,7 @@ Notebook images for ppc64le (IBM Power processor architecture) compliant with [K
 Go to my [Docker.io page](https://hub.docker.com/u/lehrig) (includes Notebook and general Kubeflow images for ppc64le).
 
 Notebook images:
-- [Kubeflow v1.2.0 / TensorFlow v1.15.4 / CPU / Python v3.6](https://hub.docker.com/r/lehrig/tensorflow-1.15.4-cpu-py3.6-notebook)
+- [Kubeflow v1.2.0 / TensorFlow v1.15.4 / Jupyter Lab 3.0.7 / Elyra v2.0.1 / CPU / Python v3.6](https://hub.docker.com/r/lehrig/tensorflow-1.15.4-cpu-py3.6-notebook)
 
 ### Building Images
 

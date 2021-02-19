@@ -33,18 +33,6 @@ else
 	fi
 fi
 
-# Elyra Kubeflow runtime: if no runtime is installed, install default runtime
-if [[ "$(elyra-metadata list runtimes | grep -i json | wc -l)" != "1" ]]; then
-  elyra-metadata install runtimes \
-       --display_name="DEV Runtime - Kubeflow Pipelines" \
-       --api_endpoint=http://ml-pipeline-ui.kubeflow \
-       --engine=Argo \
-       --cos_endpoint=http://minio-service.kubeflow:9000 \
-       --cos_username=minio \
-       --cos_password=minio123 \
-       --cos_bucket=kf-pipelines-dev \
-       --tags="['kfp', 'v1.2.0', 'dev']"
-fi
+nohup post_jupyter_start.sh &
 
 jupyter lab --notebook-dir=/home/jovyan --ip=0.0.0.0 --no-browser --allow-root --port=8888 --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*' --NotebookApp.base_url=${NB_PREFIX}
-

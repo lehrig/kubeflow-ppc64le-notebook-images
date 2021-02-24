@@ -7,7 +7,6 @@ Notebook images for ppc64le (IBM Power processor architecture) compliant with [K
 - TensorFlow / PyTorch
 - Kubeflow pipelines SDK
 - [Elyra](https://github.com/elyra-ai/elyra) integrated in Jupyter Lab
-- [Kale](https://github.com/kubeflow-kale/kale) integrated in Jupyter Lab
 - Package management via [Conda](https://docs.conda.io)
 - Fully OpenShift-compliant (rootless support), kudos to [Graham Dumpleton](https://www.openshift.com/blog/jupyter-on-openshift-part-6-running-as-an-assigned-user-id)
 

@@ -8,7 +8,7 @@ LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 
 # Install Tensorflow
 RUN mamba install --quiet --yes \
-    'tensorflow-cpu' && \
+    'tensorflow' && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"

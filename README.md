@@ -23,7 +23,7 @@ Kubeflow/Elyra images:
 ### Building Images
 
 #### Prerequisites
-1. Install podman (`yum install docker -y`) or docker (see [OpenPOWER@UNICAMP guide](https://openpower.ic.unicamp.br/post/installing-docker-from-repository/).
+1. Install podman (`yum install docker -y`) or docker (see [OpenPOWER@UNICAMP guide](https://openpower.ic.unicamp.br/post/installing-docker-from-repository/)).
 2. `sudo systemctl enable --now docker`
 
 #### Configuration

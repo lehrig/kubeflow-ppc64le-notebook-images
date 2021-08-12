@@ -45,14 +45,14 @@ export TF_GPU_IMAGE=$IMAGE:tensorflow-$TENSORFLOW_VERSION-gpu-py$PYTHON_VERSION
 
 ##### Option (a): Podman
 ```
-podman build --format docker NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_CPU_IMAGE -f Dockerfile.all-in-one-cpu .
-podman build --format docker NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_GPU_IMAGE -f Dockerfile.all-in-one-gpu .
+podman build --format docker --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg SUPPORT_GPU=false -t $TF_CPU_IMAGE -f Dockerfile.all-in-one .
+podman build --format docker --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg SUPPORT_GPU=true -t $TF_GPU_IMAGE -f Dockerfile.all-in-one .
 ```
 
 ##### Option (b): Docker
 ```
-docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_CPU_IMAGE -f Dockerfile.all-in-one-cpu .
-docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_GPU_IMAGE -f Dockerfile.all-in-one-gpu .
+docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg SUPPORT_GPU=false -t $TF_CPU_IMAGE -f Dockerfile.all-in-one .
+docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg SUPPORT_GPU=true -t $TF_GPU_IMAGE -f Dockerfile.all-in-one .
 ```
 
 #### Development/Test Builds

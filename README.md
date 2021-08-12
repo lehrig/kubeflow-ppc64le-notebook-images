@@ -18,7 +18,7 @@ Go to my kubeflow-notebook-image repository at [IBM's quay.io page](https://quay
 Kubeflow/Elyra images:
 - Python v3.6 / TensorFlow v1.15.4 / CPU / Kubeflow v1.2.0 / JupyterLab 3.0.7 / Elyra v2.0.1: quay.io/ibm/kubeflow-notebook-image-ppc64le:tensorflow-1.15.4-cpu-py3.6
 - Python v3.8 / TensorFlow v2.4.2 / CPU / Kubeflow v1.3.0 / JupyterLab 3.1.4 / Elyra v3.0.0: quay.io/ibm/kubeflow-notebook-image-ppc64le:tensorflow-2.4.2-cpu-py3.8
-- Python v3.8 / TensorFlow v2.4.2 / GPU / Kubeflow v1.3.0 / JupyterLab 3.1.4 / Elyra v3.0.0 quay.io/ibm/kubeflow-notebook-image-ppc64le:tensorflow-2.4.2-gpu-py3.8
+- Python v3.8 / TensorFlow v2.4.2 / GPU / Kubeflow v1.3.0 / JupyterLab 3.1.4 / Elyra v3.0.0: quay.io/ibm/kubeflow-notebook-image-ppc64le:tensorflow-2.4.2-gpu-py3.8
 
 
 ### Building Images

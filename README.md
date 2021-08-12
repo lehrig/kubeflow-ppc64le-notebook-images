@@ -43,13 +43,13 @@ export TF_CPU_IMAGE=$IMAGE:tensorflow-$TENSORFLOW_VERSION-cpu-py$PYTHON_VERSION
 export TF_GPU_IMAGE=$IMAGE:tensorflow-$TENSORFLOW_VERSION-gpu-py$PYTHON_VERSION
 ```
 
-##### Option (a): Podman / Single-Step Images (smaller file size)
+##### Option (a): Podman
 ```
 podman build --format docker NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_CPU_IMAGE -f Dockerfile.all-in-one-cpu .
 podman build --format docker NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_GPU_IMAGE -f Dockerfile.all-in-one-gpu .
 ```
 
-##### Option (b): Docker / Single-Step Images (smaller file size)
+##### Option (b): Docker
 ```
 docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_CPU_IMAGE -f Dockerfile.all-in-one-cpu .
 docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_GPU_IMAGE -f Dockerfile.all-in-one-gpu .
@@ -83,7 +83,7 @@ podman build --format docker --build-arg BASE_CONTAINER=$SCIPY_IMAGE -t $TF_CPU_
 podman build --format docker --build-arg BASE_CONTAINER=$SCIPY_IMAGE -t $TF_GPU_IMAGE -f Dockerfile.tensorflow-gpu .
 ```
 
-##### Option (b): Docker / Multi-Step Images (larger file size but good for debugging)
+##### Option (b): Docker
 ```
 docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $BASE_IMAGE -f Dockerfile.base .
 docker build --build-arg BASE_CONTAINER=$BASE_IMAGE -t $MINIMAL_IMAGE -f Dockerfile.minimal .

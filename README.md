@@ -13,12 +13,13 @@ Images are based on [Jupyter's Docker-Stacks](https://github.com/jupyter/docker-
 - Fully OpenShift-compliant (rootless support), kudos to [Graham Dumpleton](https://www.openshift.com/blog/jupyter-on-openshift-part-6-running-as-an-assigned-user-id)
 
 ### Pre-Build Images
-Go to my kubeflow-images repository at [IBM's quay.io page](https://quay.io/repository/ibm/kubeflow-notebook-image-ppc64le?tab=tags).
+Go to my kubeflow-notebook-image repository at [IBM's quay.io page](https://quay.io/repository/ibm/kubeflow-notebook-image-ppc64le?tab=tags).
 
 Kubeflow/Elyra images:
 - Python v3.6 / TensorFlow v1.15.4 / CPU / Kubeflow v1.2.0 / JupyterLab 3.0.7 / Elyra v2.0.1: quay.io/ibm/kubeflow-notebook-image-ppc64le:tensorflow-1.15.4-cpu-py3.6
 - Python v3.8 / TensorFlow v2.4.2 / CPU / Kubeflow v1.3.0 / JupyterLab 3.1.4 / Elyra v3.0.0: quay.io/ibm/kubeflow-notebook-image-ppc64le:tensorflow-2.4.2-cpu-py3.8
-- Python v3.8 / TensorFlow v2.4.2 / GPU / Kubeflow v1.3.0 / JupyterLab 3.1.4 / Elyra v3.0.0: quay.io/ibm/kubeflow-notebook-image-ppc64le:tensorflow-2.4.2-gpu-py3.8
+- Python v3.8 / TensorFlow v2.4.2 / GPU / Kubeflow v1.3.0 / JupyterLab 3.1.4 / Elyra v3.0.0 quay.io/ibm/kubeflow-notebook-image-ppc64le:tensorflow-2.4.2-gpu-py3.8
+
 
 ### Building Images
 
@@ -26,7 +27,38 @@ Kubeflow/Elyra images:
 1. Install podman (`yum install docker -y`) or docker (see [OpenPOWER@UNICAMP guide](https://openpower.ic.unicamp.br/post/installing-docker-from-repository/)).
 2. `sudo systemctl enable --now docker`
 
-#### Configuration
+#### Production Builds
+For production build, single-step images are used (smaller file size).
+
+##### Configuration
+```
+git clone https://github.com/lehrig/kubeflow-ppc64le-images
+cd kubeflow-ppc64le-images
+
+export PYTHON_VERSION=3.8
+export TENSORFLOW_VERSION=2.4.2
+
+export IMAGE=quay.io/ibm/kubeflow-notebook-image-ppc64le
+export TF_CPU_IMAGE=$IMAGE:tensorflow-$TENSORFLOW_VERSION-cpu-py$PYTHON_VERSION
+export TF_GPU_IMAGE=$IMAGE:tensorflow-$TENSORFLOW_VERSION-gpu-py$PYTHON_VERSION
+```
+
+##### Option (a): Podman / Single-Step Images (smaller file size)
+```
+podman build --format docker NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_CPU_IMAGE -f Dockerfile.all-in-one-cpu .
+podman build --format docker NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_GPU_IMAGE -f Dockerfile.all-in-one-gpu .
+```
+
+##### Option (b): Docker / Single-Step Images (smaller file size)
+```
+docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_CPU_IMAGE -f Dockerfile.all-in-one-cpu .
+docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_GPU_IMAGE -f Dockerfile.all-in-one-gpu .
+```
+
+#### Development/Test Builds
+For development & testing, multi-step images are used (larger file size but good for debugging).
+
+##### Configuration
 ```
 git clone https://github.com/lehrig/kubeflow-ppc64le-images
 cd kubeflow-ppc64le-images
@@ -42,19 +74,7 @@ export TF_CPU_IMAGE=$IMAGE:tensorflow-$TENSORFLOW_VERSION-cpu-py$PYTHON_VERSION
 export TF_GPU_IMAGE=$IMAGE:tensorflow-$TENSORFLOW_VERSION-gpu-py$PYTHON_VERSION
 ```
 
-#### Option (a): Podman / Single-Step Images (smaller file size)
-```
-podman build --format docker NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_CPU_IMAGE -f Dockerfile.all-in-one-cpu .
-podman build --format docker NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_GPU_IMAGE -f Dockerfile.all-in-one-gpu .
-```
-
-#### Option (b): Docker / Single-Step Images (smaller file size)
-```
-docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_CPU_IMAGE -f Dockerfile.all-in-one-cpu .
-docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $TF_GPU_IMAGE -f Dockerfile.all-in-one-gpu .
-```
-
-#### Option (c): Podman / Multi-Step Images (larger file size but good for debugging)
+##### Option (a): Podman
 ```
 podman build --format docker --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $BASE_IMAGE -f Dockerfile.base .
 podman build --format docker --build-arg BASE_CONTAINER=$BASE_IMAGE -t $MINIMAL_IMAGE -f Dockerfile.minimal .
@@ -63,7 +83,7 @@ podman build --format docker --build-arg BASE_CONTAINER=$SCIPY_IMAGE -t $TF_CPU_
 podman build --format docker --build-arg BASE_CONTAINER=$SCIPY_IMAGE -t $TF_GPU_IMAGE -f Dockerfile.tensorflow-gpu .
 ```
 
-#### Option (d): Docker / Multi-Step Images (larger file size but good for debugging)
+##### Option (b): Docker / Multi-Step Images (larger file size but good for debugging)
 ```
 docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $BASE_IMAGE -f Dockerfile.base .
 docker build --build-arg BASE_CONTAINER=$BASE_IMAGE -t $MINIMAL_IMAGE -f Dockerfile.minimal .

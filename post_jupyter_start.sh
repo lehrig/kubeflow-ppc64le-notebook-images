@@ -65,17 +65,17 @@ elyra-metadata install runtime-images --schema_name=runtime-image \
 
 elyra-metadata install runtime-images --schema_name=runtime-image \
        --name="tensorflow_2x_gpu_py3" \
-       --display_name="Tensorflow 2.3.0 with GPU" \
+       --display_name="Tensorflow 2.3.1 with GPU" \
        --description="TensorFlow 2.3 (with GPU support)" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:py3.8-tensorflow2.3.0" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:py3.8-tensorflow2.3.1" \
        --tags="['gpu', 'tensorflow']" \
        --replace
 
 elyra-metadata install runtime-images --schema_name=runtime-image \
        --name="tensorflow_2x_py3" \
-       --display_name="Tensorflow 2.3.0" \
+       --display_name="Tensorflow 2.3.1" \
        --description="TensorFlow 2.3" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:py3.8-tensorflow-cpu2.3.0" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:py3.8-tensorflow-cpu2.3.1" \
        --tags="['tensorflow']" \
        --replace
 

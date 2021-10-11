@@ -121,8 +121,8 @@ RUN case "$TARGET_RUNTIME" in \
     conda config --system --set auto_update_conda false && \
     conda config --system --set show_channel_urls true && \
     conda config --system --set channel_priority true && \
-    #conda config --system --prepend channels https://ftp.osuosl.org/pub/open-ce/1.2.2/ && \
     conda config --system --prepend channels https://opence.mit.edu/ && \
+    conda config --system --prepend channels https://ftp.osuosl.org/pub/open-ce/1.2.2/ && \
     conda config --system --prepend channels https://public.dhe.ibm.com/ibmdl/export/pub/software/server/ibm-ai/conda/ && \
     if [[ "${PYTHON_VERSION}" != "default" ]]; then conda install --yes python="${PYTHON_VERSION}"; fi && \
     conda list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \

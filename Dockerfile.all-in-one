@@ -15,7 +15,7 @@ ARG miniforge_version="${conda_version}-${miniforge_patch_number}"
 ARG IBM_POWERAI_LICENSE_ACCEPT=yes
 ARG PYTHON_VERSION=default
 ARG TARGET_RUNTIME="tensorflow-cpu"
-ARG TENSORFLOW_VERSION=2.4.1
+ARG TENSORFLOW_VERSION=2.4.2
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"

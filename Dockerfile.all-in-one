@@ -14,7 +14,8 @@ ARG miniforge_python="Mambaforge"
 ARG miniforge_version="${conda_version}-${miniforge_patch_number}"
 ARG IBM_POWERAI_LICENSE_ACCEPT=yes
 ARG PYTHON_VERSION=default
-ARG SUPPORT_GPU=false
+ARG TARGET_RUNTIME="tensorflow-cpu"
+ARG TENSORFLOW_VERSION=2.4.1
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
@@ -23,8 +24,7 @@ ENV CONDA_DIR=/opt/conda \
     NB_USER=$NB_USER \
     NB_UID=$NB_UID \
     NB_GID=$NB_GID \
-    NB_PREFIX=/ \
-    TENSORFLOW=$(if [ "$SUPPORT_GPU" = true ]; then echo "tensorflow"; else echo "tensorflow-cpu"; fi)
+    NB_PREFIX=/
 ENV PATH="${CONDA_DIR}/bin:${PATH}" \
     HOME="/home/${NB_USER}" \
     CONDA_VERSION="${conda_version}" \
@@ -100,7 +100,13 @@ USER ${NB_UID}
 WORKDIR /tmp
 
 # Runs executed as NB_UID
-RUN mkdir "/home/${NB_USER}/work" && \
+RUN case "$TARGET_RUNTIME" in \
+       "tensorflow-cpu") export RUNTIME_INSTALL=\"tensorflow-cpu=$TENSORFLOW_VERSION\" \
+       ;; \
+       "tensorflow") export RUNTIME_INSTALL=\"tensorflow=$TENSORFLOW_VERSION\" \
+       ;; \
+    esac && \
+    mkdir "/home/${NB_USER}/work" && \
     # Prerequisites installation: conda, mamba, pip, tini
     set -x && \
     miniforge_arch=$(uname -m) && \
@@ -160,7 +166,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
     'sqlalchemy' \
     'statsmodels' \
     'sympy' \
-    "${TENSORFLOW}" \
+    "${RUNTIME_INSTALL}" \
     'widgetsnbextension'\
     'xlrd' && \
     conda update --all --quiet --yes && \

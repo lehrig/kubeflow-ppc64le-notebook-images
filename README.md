@@ -40,19 +40,26 @@ export TARGET_RUNTIME=tensorflow-cpu|tensorflow
 export PYTHON_VERSION=3.8
 export TENSORFLOW_VERSION=2.4.2
 
-export IMAGE=quay.io/ibm/kubeflow-notebook-image-ppc64le
-export TF_CPU_IMAGE=$IMAGE:tensorflow-$TENSORFLOW_VERSION-cpu-py$PYTHON_VERSION
-export TF_GPU_IMAGE=$IMAGE:tensorflow-$TENSORFLOW_VERSION-gpu-py$PYTHON_VERSION
+export REGISTRY=quay.io/ibm
+export IMAGE=kubeflow-notebook-image-ppc64le
+case "$TARGET_RUNTIME" in
+   "tensorflow") export RUNTIME_VERSION=$TENSORFLOW_VERSION
+   ;;
+   "tensorflow-cpu") export RUNTIME_VERSION=$TENSORFLOW_VERSION
+   ;;
+esac
+export TAG=py${PYTHON_VERSION}-${TARGET_RUNTIME}${RUNTIME_VERSION}
+export TARGET=${REGISTRY}/${IMAGE}:${TAG}
 ```
 
 ##### Option (a): Podman
 ```
-podman build --format docker --build-arg NB_GID=0 --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TARGET_RUNTIME=$TARGET_RUNTIME -t $TF_CPU_IMAGE -f Dockerfile.all-in-one .
+podman build --format docker --build-arg NB_GID=0 --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TARGET_RUNTIME=$TARGET_RUNTIME -t $TARGET -f Dockerfile.all-in-one .
 ```
 
 ##### Option (b): Docker
 ```
-docker build --build-arg NB_GID=0 --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TARGET_RUNTIME=$TARGET_RUNTIME -t $TF_CPU_IMAGE -f Dockerfile.all-in-one .
+docker build --build-arg NB_GID=0 --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TARGET_RUNTIME=$TARGET_RUNTIME -t $TARGET -f Dockerfile.all-in-one .
 ```
 
 #### Development/Test Builds

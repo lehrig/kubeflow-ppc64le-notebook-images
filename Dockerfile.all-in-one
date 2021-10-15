@@ -16,6 +16,7 @@ ARG IBM_POWERAI_LICENSE_ACCEPT=yes
 ARG PYTHON_VERSION=default
 ARG TARGET_RUNTIME="tensorflow-cpu"
 ARG TENSORFLOW_VERSION=2.4.2
+ARG ELYRA_VERSION=3.2.0
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV XDG_CACHE_HOME="/home/${NB_USER}/.cache/"
@@ -173,7 +174,7 @@ RUN case "$TARGET_RUNTIME" in \
     pip install --quiet --no-cache-dir \
     ##################
     # pip packages
-    "elyra" \
+    "elyra==${ELYRA_VERSION}" \
     ##################
     && \
     jupyter lab build && \

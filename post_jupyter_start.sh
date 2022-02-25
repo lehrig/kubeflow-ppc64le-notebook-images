@@ -25,21 +25,17 @@ fi
 # Elyra Kubeflow component catalog: if not yet added, add it!
 if [[ $(elyra-metadata list component-catalogs) == "No metadata instances found for component-catalogs" ]] 
 then
-	  elyra-metadata install component-catalogs \
-       --display_name="TensorFlow Serving" \
-       --description="Deploy model with TensorFlow Serving" \
-       --runtime_type=KUBEFLOW_PIPELINES \
-       --schema_name="url-catalog"\
-       --paths="['https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/deploy-model-with-tfserving/component.yaml']" \
-       --categories='["Serving"]'
-       
-    elyra-metadata install component-catalogs \
-       --display_name="NVIDIA Triton Inference Server" \
-       --description="Deploy model with NVIDIA Triton Inference Server" \
-       --runtime_type=KUBEFLOW_PIPELINES \
-       --schema_name="url-catalog"\
-       --paths="['https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/deploy-model-with-triton/component.yaml']" \
-       --categories='["Serving"]'
+     elyra-metadata install component-catalogs \
+       --name="serving" \
+       --description="Deploying models for scoring" \
+       --runtime_type="KUBEFLOW_PIPELINES" \
+       --display_name="Serving" \
+       --categories='["Serving"]' \
+       --paths="[ \
+         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/deploy-model-with-tfserving/component.yaml', \
+	 'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/deploy-model-with-triton/component.yaml'
+	 ]" \
+       --schema_name="url-catalog"
 fi
 
 # Elyra Kubeflow runtime images: rewire images for ppc64le

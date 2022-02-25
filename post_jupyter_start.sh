@@ -47,7 +47,7 @@ elyra-metadata install runtime-images --schema_name=runtime-image \
        --name="anaconda" \
        --display_name="Miniforge 4.10.3 with Python 3.8" \
        --description="Python v3.8 / Conda v4.10.3" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyrav3.6.0-py3.8-anaconda4.10.3" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-anaconda4.10.3" \
        --tags="['anaconda']" \
        --replace
        
@@ -55,7 +55,7 @@ elyra-metadata install runtime-images --schema_name=runtime-image \
        --name="pandas" \
        --display_name="Pandas 1.4.1" \
        --description="Python v3.8 / Conda v4.10.3 / Pandas 1.4.1" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyrav3.6.0-py3.8-pandas1.4.1" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-pandas1.4.1" \
        --tags="['pandas']" \
        --replace
  
@@ -63,7 +63,7 @@ elyra-metadata install runtime-images --schema_name=runtime-image \
        --name="pytorch-devel" \
        --display_name="Pytorch 1.4 with CUDA-devel" \
        --description="PyTorch 1.4 (with GPU support)" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyrav3.6.0-py3.8-pytorch-devel1.4" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-pytorch-devel1.4" \
        --tags="['gpu', 'pytorch']" \
        --replace
 
@@ -71,7 +71,7 @@ elyra-metadata install runtime-images --schema_name=runtime-image \
        --name="pytorch-runtime" \
        --display_name="Pytorch 1.4 with CUDA-runtime" \
        --description="PyTorch 1.4 (with GPU support)" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyrav3.6.0-py3.8-pytorch-runtime1.4" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-pytorch-runtime1.4" \
        --tags="['gpu', 'pytorch']" \
        --replace
  
@@ -79,7 +79,7 @@ elyra-metadata install runtime-images --schema_name=runtime-image \
        --name="r" \
        --display_name="R Script" \
        --description="R Script" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyrav3.6.0-py3.8-r4" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-r4" \
        --tags="['R']" \
        --replace
 
@@ -87,7 +87,7 @@ elyra-metadata install runtime-images --schema_name=runtime-image \
        --name="tensorflow_2x_gpu_py3" \
        --display_name="Tensorflow 2.7.0 with GPU" \
        --description="TensorFlow 2.7.0 (with GPU support)" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyrav3.6.0-py3.8-tensorflow2.7.0" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-tensorflow2.7.0" \
        --tags="['gpu', 'tensorflow']" \
        --replace
 
@@ -95,7 +95,7 @@ elyra-metadata install runtime-images --schema_name=runtime-image \
        --name="tensorflow_2x_py3" \
        --display_name="Tensorflow 2.7.0" \
        --description="TensorFlow 2.7.0" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyrav3.6.0-py3.8-tensorflow-cpu2.7.0" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-tensorflow-cpu2.7.0" \
        --tags="['tensorflow']" \
        --replace
 

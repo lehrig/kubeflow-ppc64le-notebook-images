@@ -65,7 +65,7 @@ git clone https://github.com/lehrig/kubeflow-ppc64le-images
 cd kubeflow-ppc64le-images
 
 export PYTHON_VERSION=3.8
-export TENSORFLOW_VERSION=2.4.2
+export TENSORFLOW_VERSION=2.7.0
 
 export IMAGE=quay.io/ibm/kubeflow-notebook-image-ppc64le
 export BASE_IMAGE=$IMAGE:base-py$PYTHON_VERSION

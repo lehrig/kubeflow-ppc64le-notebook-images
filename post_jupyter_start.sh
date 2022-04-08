@@ -32,8 +32,8 @@ then
        --display_name="Serving" \
        --categories='["Serving"]' \
        --paths="[ \
-         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/deploy-model-with-tfserving/component.yaml', \
-	 'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/deploy-model-with-triton/component.yaml'
+         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-deployment/deploy-model-with-tfserving/component.yaml', \
+	 'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-deployment/deploy-model-with-triton/component.yaml'
 	 ]" \
        --schema_name="url-catalog"
 fi

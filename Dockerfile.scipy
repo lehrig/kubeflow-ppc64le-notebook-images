@@ -1,27 +1,35 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-ARG OWNER=lehrig
-ARG BASE_CONTAINER=$OWNER/minimal-notebook
+ARG OWNER=quay.io/ibm
+ARG ELYRA_VERSION=3.7.0
+ARG PYTHON_VERSION=3.8
+
+ARG BASE_CONTAINER=$OWNER/kubeflow-notebook-image-ppc64le:elyra$ELYRA_VERSION-py$PYTHON_VERSION-min
 FROM $BASE_CONTAINER
 
 LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 
+# Fix: https://github.com/hadolint/hadolint/wiki/DL4006
+# Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 USER root
 
-# ffmpeg for matplotlib anim & dvipng+cm-super for latex labels
 RUN apt-get update --yes && \
-    apt-get install --yes --no-install-recommends ffmpeg dvipng cm-super && \
+    apt-get install --yes --no-install-recommends \
+    # for cython: https://cython.readthedocs.io/en/latest/src/quickstart/install.html
+    build-essential \
+    # for latex labels
+    cm-super \
+    dvipng \
+    # for matplotlib anim
+    ffmpeg && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER ${NB_UID}
 
 # Install Python 3 packages
-ENV IBM_POWERAI_LICENSE_ACCEPT=yes
-RUN conda config --system --set channel_priority true && \
-    #conda config --system --prepend channels https://ftp.osuosl.org/pub/open-ce/1.2.2/ && \
-    conda config --system --prepend channels https://opence.mit.edu/ && \
-    conda config --system --prepend channels https://public.dhe.ibm.com/ibmdl/export/pub/software/server/ibm-ai/conda/ && \
-    conda install --quiet --yes \
+RUN mamba install --quiet --yes \
     'altair' \
     'beautifulsoup4' \
     'bokeh' \
@@ -50,7 +58,7 @@ RUN conda config --system --set channel_priority true && \
     'sympy' \
     'widgetsnbextension'\
     'xlrd' && \
-    conda clean --all -f -y && \
+    mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
@@ -71,4 +79,3 @@ RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
 USER ${NB_UID}
 
 WORKDIR "${HOME}"
-

@@ -49,6 +49,7 @@ RUN mamba install --quiet --yes \
     'patsy' \
     'protobuf' \
     'pytables' \
+    'opencv' \
     'scikit-image' \
     'scikit-learn' \
     'scipy' \

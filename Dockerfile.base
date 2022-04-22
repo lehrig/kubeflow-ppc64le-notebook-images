@@ -11,6 +11,7 @@ LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_GID="100"
+ARG ELYRA_VERSION=3.7.0
 
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
 # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
@@ -144,7 +145,7 @@ RUN mamba install --quiet --yes \
     'jupyterlab' \
     # ----
     # Elyra deps
-    'elyra[all]' \
+    'elyra[all]=${ELYRA_VERSION}' \
     # ----
     && \
     mamba clean --all -f -y && \

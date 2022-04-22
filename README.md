@@ -26,8 +26,8 @@ For production build, single-step images are used (smaller file size).
 
 ##### Configuration
 ```
-git clone https://github.com/lehrig/kubeflow-ppc64le-images
-cd kubeflow-ppc64le-images
+git clone https://github.com/lehrig/kubeflow-ppc64le-notebook-images
+cd kubeflow-ppc64le-notebook-images
 
 export TARGET_RUNTIME=tensorflow-cpu|tensorflow
 

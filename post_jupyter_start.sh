@@ -26,12 +26,36 @@ fi
 if [[ $(elyra-metadata list component-catalogs) == "No metadata instances found for component-catalogs" ]] 
 then
      elyra-metadata install component-catalogs \
-       --name="serving" \
-       --description="Deploying models for scoring" \
+       --name="extract" \
+       --description="Extract data" \
        --runtime_type="KUBEFLOW_PIPELINES" \
-       --display_name="Serving" \
-       --categories='["Serving"]' \
+       --display_name="Data Extraction" \
+       --categories='["Data Extraction"]' \
        --paths="[ \
+         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-extraction/download-and-extract-from-url/component.yaml'
+         ]" \
+       --schema_name="url-catalog"
+
+     elyra-metadata install component-catalogs \
+       --name="build" \
+       --description="Build models" \
+       --runtime_type="KUBEFLOW_PIPELINES" \
+       --display_name="Model Building" \
+       --categories='["Model Building"]' \
+       --paths="[ \
+         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/convert-to-onnx/component.yaml', \
+         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/upload-model/component.yaml'
+         ]" \
+       --schema_name="url-catalog"
+
+     elyra-metadata install component-catalogs \
+       --name="deployment" \
+       --description="Deploying models for model serving" \
+       --runtime_type="KUBEFLOW_PIPELINES" \
+       --display_name="Model Deployment" \
+       --categories='["Model Deployment"]' \
+       --paths="[ \
+         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-deployment/deploy-model-with-kserve/component.yaml', \
          'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-deployment/deploy-model-with-tfserving/component.yaml', \
 	 'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-deployment/deploy-model-with-triton/component.yaml'
 	 ]" \

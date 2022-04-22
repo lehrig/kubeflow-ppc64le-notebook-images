@@ -21,74 +21,34 @@ Go to my kubeflow-notebook-image repository at [IBM's quay.io page](https://quay
 1. Install podman (`yum install docker -y`) or docker (see [OpenPOWER@UNICAMP guide](https://openpower.ic.unicamp.br/post/installing-docker-from-repository/)).
 2. `sudo systemctl enable --now docker`
 
-#### Production Builds
-For production build, single-step images are used (smaller file size).
-
-##### Configuration
+#### Configuration
 ```
 git clone https://github.com/lehrig/kubeflow-ppc64le-notebook-images
 cd kubeflow-ppc64le-notebook-images
 
-export TARGET_RUNTIME=tensorflow-cpu|tensorflow
-
-export PYTHON_VERSION=3.8
-export TENSORFLOW_VERSION=2.7.0
-
-export REGISTRY=quay.io/ibm
-export IMAGE=kubeflow-notebook-image-ppc64le
-case "$TARGET_RUNTIME" in
-   "tensorflow") export RUNTIME_VERSION=$TENSORFLOW_VERSION
-   ;;
-   "tensorflow-cpu") export RUNTIME_VERSION=$TENSORFLOW_VERSION
-   ;;
-esac
-export TAG=py${PYTHON_VERSION}-${TARGET_RUNTIME}${RUNTIME_VERSION}
-export TARGET=${REGISTRY}/${IMAGE}:${TAG}
-```
-
-##### Option (a): Podman
-```
-podman build --format docker --build-arg NB_GID=0 --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TARGET_RUNTIME=$TARGET_RUNTIME -t $TARGET -f Dockerfile.all-in-one .
-```
-
-##### Option (b): Docker
-```
-docker build --build-arg NB_GID=0 --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TARGET_RUNTIME=$TARGET_RUNTIME -t $TARGET -f Dockerfile.all-in-one .
-```
-
-#### Development/Test Builds
-For development & testing, multi-step images are used (larger file size but good for debugging).
-
-##### Configuration
-```
-git clone https://github.com/lehrig/kubeflow-ppc64le-images
-cd kubeflow-ppc64le-images
-
+export ELYRA_VERSION=3.7.0
 export PYTHON_VERSION=3.8
 export TENSORFLOW_VERSION=2.7.0
 
 export IMAGE=quay.io/ibm/kubeflow-notebook-image-ppc64le
-export BASE_IMAGE=$IMAGE:base-py$PYTHON_VERSION
-export MINIMAL_IMAGE=$IMAGE:minimal-py$PYTHON_VERSION
-export SCIPY_IMAGE=$IMAGE:scipy-py$PYTHON_VERSION
-export TF_CPU_IMAGE=$IMAGE:tensorflow-$TENSORFLOW_VERSION-cpu-py$PYTHON_VERSION
-export TF_GPU_IMAGE=$IMAGE:tensorflow-$TENSORFLOW_VERSION-gpu-py$PYTHON_VERSION
+export TAG=elyra${ELYRA_VERSION}-py${PYTHON_VERSION}
+
+export BASE_IMAGE=$IMAGE:$TAG-base
+export MINIMAL_IMAGE=$IMAGE:$TAG-min
+export SCIPY_IMAGE=$IMAGE:$TAG-scipy
+export TF_CPU_IMAGE=$IMAGE:$TAG-tensorflow-cpu${TENSORFLOW_VERSION}
+export TF_GPU_IMAGE=$IMAGE:$TAG-tensorflow-gpu${TENSORFLOW_VERSION}
 ```
 
-##### Option (a): Podman
+Then select one of the latter environment variables as ```$TARGET``` and the appropriate Docker file as```$TARGET_DOCKER_FILE```.
+
+
+#### Option (a): Podman
 ```
-podman build --format docker --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $BASE_IMAGE -f Dockerfile.base .
-podman build --format docker --build-arg BASE_CONTAINER=$BASE_IMAGE -t $MINIMAL_IMAGE -f Dockerfile.minimal .
-podman build --format docker --build-arg BASE_CONTAINER=$MINIMAL_IMAGE -t $SCIPY_IMAGE -f Dockerfile.scipy .
-podman build --format docker --build-arg BASE_CONTAINER=$SCIPY_IMAGE -t $TF_CPU_IMAGE -f Dockerfile.tensorflow-cpu .
-podman build --format docker --build-arg BASE_CONTAINER=$SCIPY_IMAGE -t $TF_GPU_IMAGE -f Dockerfile.tensorflow-gpu .
+podman build --format docker --squash --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION -t $TARGET -f $TARGET_DOCKER_FILE .
 ```
 
-##### Option (b): Docker
+#### Option (b): Docker
 ```
-docker build --build-arg NB_GID=0 --build-arg PYTHON_VERSION=$PYTHON_VERSION -t $BASE_IMAGE -f Dockerfile.base .
-docker build --build-arg BASE_CONTAINER=$BASE_IMAGE -t $MINIMAL_IMAGE -f Dockerfile.minimal .
-docker build --build-arg BASE_CONTAINER=$MINIMAL_IMAGE -t $SCIPY_IMAGE -f Dockerfile.scipy .
-docker build --build-arg BASE_CONTAINER=$SCIPY_IMAGE -t $TF_CPU_IMAGE -f Dockerfile.tensorflow-cpu .
-docker build --build-arg BASE_CONTAINER=$SCIPY_IMAGE -t $TF_GPU_IMAGE -f Dockerfile.tensorflow-gpu .
+docker build --squash --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION -t $TARGET -f $TARGET_DOCKER_FILE .
 ```

@@ -40,8 +40,8 @@ then
        --name="transform" \
        --description="Transform data" \
        --runtime_type="KUBEFLOW_PIPELINES" \
-       --display_name="Data Transformation" \
-       --categories='["Data Transformation"]' \
+       --display_name="Data Transform" \
+       --categories='["Data Transform"]' \
        --paths="[ \
          'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-transformation/run-spark-job/component.yaml'
          ]" \

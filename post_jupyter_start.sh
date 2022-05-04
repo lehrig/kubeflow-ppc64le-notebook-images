@@ -35,6 +35,17 @@ then
          'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-extraction/download-and-extract-from-url/component.yaml'
          ]" \
        --schema_name="url-catalog"
+       
+     elyra-metadata install component-catalogs \
+       --name="transform" \
+       --description="Transform data" \
+       --runtime_type="KUBEFLOW_PIPELINES" \
+       --display_name="Data Transformation" \
+       --categories='["Data Transformation"]' \
+       --paths="[ \
+         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-transformation/run-spark-job/component.yaml'
+         ]" \
+       --schema_name="url-catalog"
 
      elyra-metadata install component-catalogs \
        --name="build" \

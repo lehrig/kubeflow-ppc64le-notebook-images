@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sleep 10
+sleep 20
 
 # Elyra Kubeflow runtime: if no runtime is installed, install default runtime
 if [[ "$(elyra-metadata list runtimes | grep -i json | wc -l)" != "1" ]]; then

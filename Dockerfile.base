@@ -12,7 +12,7 @@ ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_GID="100"
 ARG ELYRA_VERSION=3.8.0
-ARG POST_JUPYTER_START_SLEEP_TIME=10
+ARG JUPYTER_START_SLEEP_TIME=10
 
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
 # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
@@ -61,7 +61,7 @@ ENV CONDA_DIR=/opt/conda \
     NB_USER="${NB_USER}" \
     NB_UID=${NB_UID} \
     NB_GID=${NB_GID} \
-    POST_JUPYTER_START_SLEEP_TIME=${POST_JUPYTER_START_SLEEP_TIME} \
+    JUPYTER_START_SLEEP_TIME=${JUPYTER_START_SLEEP_TIME} \
     LC_ALL=en_US.UTF-8 \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8

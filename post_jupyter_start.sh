@@ -43,8 +43,7 @@ elyra-metadata update runtime-images \
        --display_name="Tensorflow 2.7.0 with GPU" \
        --description="TensorFlow 2.7.0 (with GPU support)" \
        --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-tensorflow2.7.0" \
-       --tags="['gpu', 'tensorflow']" \
-       --replace
+       --tags="['gpu', 'tensorflow']"
 
 elyra-metadata update runtime-images \
        --name="tensorflow_2x_py3" \
@@ -129,7 +128,7 @@ if [[ "$(elyra-metadata list runtimes | grep -i json | wc -l)" != "1" ]]; then
   export USER_NAMESPACE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 
   elyra-metadata create runtimes \
-       --schema_name=kfp
+       --schema_name=kfp \
        --display_name="DEV Runtime - Kubeflow Pipelines" \
        --public_api_endpoint=$PUBLIC_API_ENDPOINT \
        --api_endpoint="https://kubeflow.apps.edb-p1306.cecc.ihost.com/pipeline" \

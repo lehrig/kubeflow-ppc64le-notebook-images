@@ -20,7 +20,8 @@ if [[ ! -w /home/jovyan ]]; then
 	echo 'Container must be run with group "users" to update files'
 fi
 
-nohup post_jupyter_start.sh &
+sleep $JUPYTER_START_SLEEP_TIME
 
-sleep 10
+post_jupyter_start.sh
+
 jupyter lab --notebook-dir=/home/jovyan --ip=0.0.0.0 --no-browser --allow-root --port=8888 --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*' --NotebookApp.base_url=${NB_PREFIX}

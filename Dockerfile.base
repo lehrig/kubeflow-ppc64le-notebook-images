@@ -124,6 +124,7 @@ RUN set -x && \
     conda config --system --set channel_priority true && \
     conda config --system --prepend channels https://opence.mit.edu/ && \
     conda config --system --prepend channels https://ftp.osuosl.org/pub/open-ce/current/ && \
+    conda config --system --prepend channels mgiessing && \
     if [[ "${PYTHON_VERSION}" != "default" ]]; then mamba install --quiet --yes python="${PYTHON_VERSION}"; fi && \
     # Pin major.minor version of python
     mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \

@@ -120,10 +120,10 @@ fi
 
 # Elyra Kubeflow runtime: if no runtime is installed, install default runtime
 if [[ "$(elyra-metadata list runtimes | grep -i json | wc -l)" != "1" ]]; then
-  export KFP_HOST=$(getent hosts istio-ingressgateway-istio-system.apps | awk '{ print $2 }')
+  export KFP_HOST=$(getent hosts kubeflow.apps | awk '{ print $2 }')
   export MINIO_HOST=$(getent hosts minio-service-kubeflow.apps | awk '{ print $2 }')
 
-  export API_ENDPOINT=http://$KFP_HOST/pipeline
+  export PUBLIC_API_ENDPOINT=http://$KFP_HOST/pipeline
   export COS_ENDPOINT=http://$MINIO_HOST
   
   export USER_NAMESPACE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
@@ -131,7 +131,7 @@ if [[ "$(elyra-metadata list runtimes | grep -i json | wc -l)" != "1" ]]; then
   elyra-metadata create runtimes \
        --schema_name=kfp
        --display_name="DEV Runtime - Kubeflow Pipelines" \
-       --public_api_endpoint=$API_ENDPOINT \
+       --public_api_endpoint=$PUBLIC_API_ENDPOINT \
        --api_endpoint="https://kubeflow.apps.edb-p1306.cecc.ihost.com/pipeline" \
        --user_namespace=$USER_NAMESPACE \
        --auth_type="KUBERNETES_SERVICE_ACCOUNT_TOKEN" \

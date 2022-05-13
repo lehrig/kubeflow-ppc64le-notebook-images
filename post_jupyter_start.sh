@@ -1,7 +1,5 @@
 #!/bin/bash
 
-sleep $POST_JUPYTER_START_SLEEP_TIME
-
 # Elyra Kubeflow runtime images: rewire images for ppc64le
 elyra-metadata update runtime-images \
        --name="anaconda" \

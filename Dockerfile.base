@@ -149,7 +149,7 @@ RUN mamba install --quiet --yes \
     'jupyterlab' \
     # ----
     # Elyra deps
-    "elyra[all]=${ELYRA_VERSION}" \
+    "elyra[all]=${ELYRA_VERSION}">> ${CONDA_DIR}/conda-meta/pinned \
     # ----
     && \
     mamba clean --all -f -y && \

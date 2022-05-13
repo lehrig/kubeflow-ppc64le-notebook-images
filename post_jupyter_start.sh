@@ -1,31 +1,76 @@
 #!/bin/bash
 
-sleep 20
+sleep 10
 
-# Elyra Kubeflow runtime: if no runtime is installed, install default runtime
-if [[ "$(elyra-metadata list runtimes | grep -i json | wc -l)" != "1" ]]; then
-  export KFP_HOST=$(getent hosts istio-ingressgateway-istio-system.apps | awk '{ print $2 }')
-  export MINIO_HOST=$(getent hosts minio-service-kubeflow.apps | awk '{ print $2 }')
+# Elyra Kubeflow runtime images: rewire images for ppc64le
+elyra-metadata update runtime-images \
+       --name="anaconda" \
+       --display_name="Miniforge 4.10.3 with Python 3.8" \
+       --description="Python v3.8 / Conda v4.10.3" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-anaconda4.10.3" \
+       --tags="['anaconda']"
+       
+elyra-metadata update runtime-images \
+       --name="pandas" \
+       --display_name="Pandas 1.4.1" \
+       --description="Python v3.8 / Conda v4.10.3 / Pandas 1.4.1" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-pandas1.4.1" \
+       --tags="['pandas']"
+ 
+elyra-metadata update runtime-images \
+       --name="pytorch-devel" \
+       --display_name="Pytorch 1.4 with CUDA-devel" \
+       --description="PyTorch 1.4 (with GPU support)" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-pytorch-devel1.4" \
+       --tags="['gpu', 'pytorch']"
 
-  export API_ENDPOINT=http://$KFP_HOST/pipeline
-  export COS_ENDPOINT=http://$MINIO_HOST
+elyra-metadata update runtime-images \
+       --name="pytorch-runtime" \
+       --display_name="Pytorch 1.4 with CUDA-runtime" \
+       --description="PyTorch 1.4 (with GPU support)" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-pytorch-runtime1.4" \
+       --tags="['gpu', 'pytorch']"
+ 
+elyra-metadata update runtime-images \
+       --name="r" \
+       --display_name="R Script" \
+       --description="R Script" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-r4" \
+       --tags="['R']"
 
-  elyra-metadata install runtimes \
-       --display_name="DEV Runtime - Kubeflow Pipelines" \
-       --api_endpoint=$API_ENDPOINT \
-       --engine=Argo \
-       --cos_endpoint=$COS_ENDPOINT \
-       --cos_username=minio \
-       --cos_password=minio123 \
-       --cos_bucket=kf-pipelines-dev \
-       --tags="['kfp', 'dev']" \
-       --schema_name=kfp
-fi
+elyra-metadata update runtime-images \
+       --name="tensorflow_2x_gpu_py3" \
+       --display_name="Tensorflow 2.7.0 with GPU" \
+       --description="TensorFlow 2.7.0 (with GPU support)" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-tensorflow2.7.0" \
+       --tags="['gpu', 'tensorflow']" \
+       --replace
+
+elyra-metadata update runtime-images \
+       --name="tensorflow_2x_py3" \
+       --display_name="Tensorflow 2.7.0" \
+       --description="TensorFlow 2.7.0" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-tensorflow-cpu2.7.0" \
+       --tags="['tensorflow']"
+
+elyra-metadata update runtime-images \
+       --name="tensorflow_gpu_py3" \
+       --display_name="Tensorflow 1.15.2 with GPU" \
+       --description="TensorFlow 1.15 (with GPU support)" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:py3.8-tensorflow1.15.2" \
+       --tags="['gpu', 'tensorflow']"
+
+elyra-metadata update runtime-images \
+       --name="tensorflow_py3" \
+       --display_name="Tensorflow 1.15.2" \
+       --description="TensorFlow 1.15" \
+       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:py3.8-tensorflow-cpu1.15.2" \
+       --tags="['tensorflow']"
 
 # Elyra Kubeflow component catalog: if not yet added, add it!
 if [[ $(elyra-metadata list component-catalogs) == "No metadata instances found for component-catalogs" ]] 
 then
-     elyra-metadata install component-catalogs \
+     elyra-metadata create component-catalogs \
        --name="extract" \
        --description="Extract data" \
        --runtime_type="KUBEFLOW_PIPELINES" \
@@ -36,7 +81,7 @@ then
          ]" \
        --schema_name="url-catalog"
        
-     elyra-metadata install component-catalogs \
+     elyra-metadata create component-catalogs \
        --name="transform" \
        --description="Transform data" \
        --runtime_type="KUBEFLOW_PIPELINES" \
@@ -47,7 +92,7 @@ then
          ]" \
        --schema_name="url-catalog"
 
-     elyra-metadata install component-catalogs \
+     elyra-metadata create component-catalogs \
        --name="build" \
        --description="Build models" \
        --runtime_type="KUBEFLOW_PIPELINES" \
@@ -59,7 +104,7 @@ then
          ]" \
        --schema_name="url-catalog"
 
-     elyra-metadata install component-catalogs \
+     elyra-metadata create component-catalogs \
        --name="deployment" \
        --description="Deploying models for model serving" \
        --runtime_type="KUBEFLOW_PIPELINES" \
@@ -73,75 +118,28 @@ then
        --schema_name="url-catalog"
 fi
 
-# Elyra Kubeflow runtime images: rewire images for ppc64le
-elyra-metadata install runtime-images --schema_name=runtime-image \
-       --name="anaconda" \
-       --display_name="Miniforge 4.10.3 with Python 3.8" \
-       --description="Python v3.8 / Conda v4.10.3" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-anaconda4.10.3" \
-       --tags="['anaconda']" \
-       --replace
-       
-elyra-metadata install runtime-images --schema_name=runtime-image \
-       --name="pandas" \
-       --display_name="Pandas 1.4.1" \
-       --description="Python v3.8 / Conda v4.10.3 / Pandas 1.4.1" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-pandas1.4.1" \
-       --tags="['pandas']" \
-       --replace
- 
-elyra-metadata install runtime-images --schema_name=runtime-image \
-       --name="pytorch-devel" \
-       --display_name="Pytorch 1.4 with CUDA-devel" \
-       --description="PyTorch 1.4 (with GPU support)" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-pytorch-devel1.4" \
-       --tags="['gpu', 'pytorch']" \
-       --replace
+# Elyra Kubeflow runtime: if no runtime is installed, install default runtime
+if [[ "$(elyra-metadata list runtimes | grep -i json | wc -l)" != "1" ]]; then
+  export KFP_HOST=$(getent hosts istio-ingressgateway-istio-system.apps | awk '{ print $2 }')
+  export MINIO_HOST=$(getent hosts minio-service-kubeflow.apps | awk '{ print $2 }')
 
-elyra-metadata install runtime-images --schema_name=runtime-image \
-       --name="pytorch-runtime" \
-       --display_name="Pytorch 1.4 with CUDA-runtime" \
-       --description="PyTorch 1.4 (with GPU support)" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-pytorch-runtime1.4" \
-       --tags="['gpu', 'pytorch']" \
-       --replace
- 
-elyra-metadata install runtime-images --schema_name=runtime-image \
-       --name="r" \
-       --display_name="R Script" \
-       --description="R Script" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-r4" \
-       --tags="['R']" \
-       --replace
+  export API_ENDPOINT=http://$KFP_HOST/pipeline
+  export COS_ENDPOINT=http://$MINIO_HOST
+  
+  export USER_NAMESPACE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 
-elyra-metadata install runtime-images --schema_name=runtime-image \
-       --name="tensorflow_2x_gpu_py3" \
-       --display_name="Tensorflow 2.7.0 with GPU" \
-       --description="TensorFlow 2.7.0 (with GPU support)" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-tensorflow2.7.0" \
-       --tags="['gpu', 'tensorflow']" \
-       --replace
-
-elyra-metadata install runtime-images --schema_name=runtime-image \
-       --name="tensorflow_2x_py3" \
-       --display_name="Tensorflow 2.7.0" \
-       --description="TensorFlow 2.7.0" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:elyra3.6.0-py3.8-tensorflow-cpu2.7.0" \
-       --tags="['tensorflow']" \
-       --replace
-
-elyra-metadata install runtime-images --schema_name=runtime-image \
-       --name="tensorflow_gpu_py3" \
-       --display_name="Tensorflow 1.15.2 with GPU" \
-       --description="TensorFlow 1.15 (with GPU support)" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:py3.8-tensorflow1.15.2" \
-       --tags="['gpu', 'tensorflow']" \
-       --replace
-
-elyra-metadata install runtime-images --schema_name=runtime-image \
-       --name="tensorflow_py3" \
-       --display_name="Tensorflow 1.15.2" \
-       --description="TensorFlow 1.15" \
-       --image_name="quay.io/ibm/kubeflow-elyra-runtimes-ppc64le:py3.8-tensorflow-cpu1.15.2" \
-       --tags="['tensorflow']" \
-       --replace
+  elyra-metadata create runtimes \
+       --schema_name=kfp
+       --display_name="DEV Runtime - Kubeflow Pipelines" \
+       --public_api_endpoint=$API_ENDPOINT \
+       --api_endpoint="https://kubeflow.apps.edb-p1306.cecc.ihost.com/pipeline" \
+       --user_namespace=$USER_NAMESPACE \
+       --auth_type="KUBERNETES_SERVICE_ACCOUNT_TOKEN" \
+       --engine=Argo \
+       --cos_endpoint=$COS_ENDPOINT \
+       --cos_auth_type="USER_CREDENTIALS" \
+       --cos_username=minio \
+       --cos_password=minio123 \
+       --cos_bucket=kf-pipelines-dev \
+       --tags="['kfp', 'dev']"
+fi

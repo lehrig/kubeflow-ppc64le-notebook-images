@@ -2,15 +2,7 @@
 
 # if no components are installed, this is a first-time run -> configure Elyra
 if [[ $(elyra-metadata list component-catalogs) == "No metadata instances found for component-catalogs" ]] 
-then
-    export KFP_HOST=$(getent hosts kubeflow.apps | awk '{ print $2 }')
-    export MINIO_HOST=$(getent hosts minio-service-kubeflow.apps | awk '{ print $2 }')
-
-    export PUBLIC_API_ENDPOINT=http://$KFP_HOST/pipeline
-    export COS_ENDPOINT=http://$MINIO_HOST
-  
-    export USER_NAMESPACE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
-  
+then  
     ############################################################
     # Elyra runtime images: rewire images for ppc64le
     elyra-metadata update runtime-images \
@@ -127,6 +119,15 @@ then
 
     ############################################################
     # Default Kubeflow Runtime
+    
+    export KFP_HOST=$(getent hosts kubeflow.apps | awk '{ print $2 }')
+    export MINIO_HOST=$(getent hosts minio-service-kubeflow.apps | awk '{ print $2 }')
+
+    export PUBLIC_API_ENDPOINT=http://$KFP_HOST/pipeline
+    export COS_ENDPOINT=http://$MINIO_HOST
+  
+    export USER_NAMESPACE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
+    
     elyra-metadata create runtimes \
       --schema_name=kfp \
       --display_name="DEV Runtime - Kubeflow Pipelines" \

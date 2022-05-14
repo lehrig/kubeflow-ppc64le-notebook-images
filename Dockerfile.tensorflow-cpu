@@ -1,8 +1,9 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 ARG OWNER=quay.io/ibm
-ARG ELYRA_VERSION=3.7.0
+ARG ELYRA_VERSION=3.8.0
 ARG PYTHON_VERSION=3.8
+ARG TENSORFLOW_VERSION=2.7.0
 
 ARG BASE_CONTAINER=$OWNER/kubeflow-notebook-image-ppc64le:elyra$ELYRA_VERSION-py$PYTHON_VERSION-scipy
 FROM $BASE_CONTAINER
@@ -15,7 +16,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Install Tensorflow
 RUN mamba install --quiet --yes \
-    "tensorflow-cpu=${RUNTIME_VERSION}" \
+    "tensorflow-cpu=v${TENSORFLOW_VERSION}" \
     && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \

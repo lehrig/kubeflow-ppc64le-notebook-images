@@ -1,7 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 ARG OWNER=quay.io/ibm
-ARG ELYRA_VERSION=3.7.0
+ARG ELYRA_VERSION=3.8.0
 ARG PYTHON_VERSION=3.8
 
 ARG BASE_CONTAINER=$OWNER/kubeflow-notebook-image-ppc64le:elyra$ELYRA_VERSION-py$PYTHON_VERSION-min

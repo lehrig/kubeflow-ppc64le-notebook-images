@@ -30,6 +30,7 @@ RUN apt-get update --yes && \
     ##### LEHRIG ####
     curl \
     git \
+    jq \
     vim-tiny \
     nano-tiny \
     unzip \

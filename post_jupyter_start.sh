@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # if no components are installed, this is a first-time run -> configure Elyra
-if [[ $(elyra-metadata list component-catalogs) == "No metadata instances found for component-catalogs" ]] 
+if [[ $(elyra-metadata list component-catalogs --json | jq '. | length') == 0 ]] 
 then  
     ############################################################
     # Elyra runtime images: rewire images for ppc64le

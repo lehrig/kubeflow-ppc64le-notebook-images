@@ -138,8 +138,8 @@ then
       --engine=Argo \
       --cos_endpoint=$COS_ENDPOINT \
       --cos_auth_type="USER_CREDENTIALS" \
-      --cos_username=minio \
-      --cos_password=minio123 \
+      --cos_username=$MINIO_ID \
+      --cos_password=$MINIO_PWD \
       --cos_bucket=kf-pipelines-dev \
       --tags="['kfp', 'dev']"
       

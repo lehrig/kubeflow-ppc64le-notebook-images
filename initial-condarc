@@ -3,5 +3,6 @@
 auto_update_conda: false
 show_channel_urls: true
 channels:
-  - https://opence.mit.edu/
+#  - https://opence.mit.edu/
   - https://ftp.osuosl.org/pub/open-ce/current/
+  - mgiessing

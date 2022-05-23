@@ -150,6 +150,7 @@ RUN set -x && \
         'pip' \
         # Elyra deps
         'pynacl' \
+        'nodejs' \
         'regex' \
         'ujson' \
         # ----

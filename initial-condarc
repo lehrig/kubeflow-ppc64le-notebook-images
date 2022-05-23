@@ -4,7 +4,8 @@ auto_update_conda: false
 show_channel_urls: true
 channel_priority: strict
 channels:
+  - https://conda.anaconda.org
 #  - https://opence.mit.edu/
   - https://ftp.osuosl.org/pub/open-ce/current/
   - mgiessing
-  - conda-forge
+#  - conda-forge

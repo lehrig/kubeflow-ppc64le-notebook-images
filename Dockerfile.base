@@ -148,21 +148,23 @@ RUN set -x && \
         ##### LEHRIG ####
         # ----
         'pip' \
+        # Huggingface Datasets deps
+        'pyarrow' \
+        'orc' \
+        'numpy' \
+        'pandas' \
+        'blas' \
+        'brotli' \
+        'datasets' \ 
         # Elyra deps
         'pynacl' \
-        'nodejs' \
+        'nodejs>=16' \
         'regex' \
         'ujson' \
+        'elyra[all]' \
         # ----
         && \
         mamba update --all --quiet --yes && \
-        pip install --quiet --no-cache-dir \
-        ##################
-        # pip packages
-        "elyra[all]==${ELYRA_VERSION}" \
-        ##################
-        && \
-        jupyter lab build \
         ##################
         ##### /LEHRIG ###
     rm micromamba && \

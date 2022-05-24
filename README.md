@@ -1,7 +1,7 @@
 # Kubeflow Notebook Images for ppc64le
 
 Notebook images for ppc64le (IBM Power processor architecture) compliant with [Kubeflow Notebook Server](https://www.kubeflow.org/docs/notebooks/).
-Images are based on [Jupyter's Docker-Stacks](https://github.com/jupyter/docker-stacks) with a base > minimal > SciPy > TensorFlow > Kubeflow/Elyra stack.
+Images are based on [Jupyter's Docker-Stacks](https://github.com/jupyter/docker-stacks) with a base (+ Elyra, Huggingface Datasets) > minimal > SciPy > TensorFlow/PyTorch > Kubeflow stack.
 
 ### Features
 - ppc64le architecture support
@@ -26,9 +26,9 @@ Go to my kubeflow-notebook-image repository at [IBM's quay.io page](https://quay
 git clone https://github.com/lehrig/kubeflow-ppc64le-notebook-images
 cd kubeflow-ppc64le-notebook-images
 
-export ELYRA_VERSION=3.7.0
+export ELYRA_VERSION=3.8.0
 export PYTHON_VERSION=3.8
-export TENSORFLOW_VERSION=2.7.0
+export TENSORFLOW_VERSION=2.8.0
 
 export IMAGE=quay.io/ibm/kubeflow-notebook-image-ppc64le
 export TAG=elyra${ELYRA_VERSION}-py${PYTHON_VERSION}
@@ -40,7 +40,12 @@ export TF_CPU_IMAGE=$IMAGE:$TAG-tensorflow-cpu${TENSORFLOW_VERSION}
 export TF_GPU_IMAGE=$IMAGE:$TAG-tensorflow-gpu${TENSORFLOW_VERSION}
 ```
 
-Then select one of the latter environment variables as ```$TARGET``` and the appropriate Docker file as```$TARGET_DOCKER_FILE```.
+Then select one of the latter environment variables as ```$TARGET``` and the appropriate Docker file as ```$TARGET_DOCKER_FILE```.
+Example:
+```
+export TARGET=$BASE_IMAGE
+export TARGET_DOCKER_FILE=Dockerfile.base
+```
 
 
 #### Option (a): Podman

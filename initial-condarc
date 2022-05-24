@@ -4,10 +4,10 @@ auto_update_conda: false
 show_channel_urls: true
 channel_priority: strict
 channels:
-  - https://repo.anaconda.com/pkgs/main
-  - https://repo.anaconda.com/pkgs/r
+  - huggingface
 #  - https://opence.mit.edu/
   - https://ftp.osuosl.org/pub/open-ce/current/
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
   - mgiessing
-  - huggingface
   - conda-forge

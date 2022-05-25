@@ -35,6 +35,7 @@ RUN apt-get update --yes && \
     nano-tiny \
     unzip \
     vim \
+    libsndfile1 \
     ##### /LEHRIG ###
     # - bzip2 is necessary to extract the micromamba executable.
     bzip2 \

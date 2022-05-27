@@ -164,7 +164,7 @@ RUN set -x && \
         #"elyra[all]=${ELYRA_VERSION}" \
         # ----
         && \
-        mamba update --all --quiet --yes && \
+        #mamba update --all --quiet --yes && \
         pip install --quiet --no-cache-dir \
         ##################
         # pip packages

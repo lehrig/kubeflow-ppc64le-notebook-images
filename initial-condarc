@@ -2,7 +2,7 @@
 
 auto_update_conda: false
 show_channel_urls: true
-channel_priority: strict
+channel_priority: flexible
 channels:
   - huggingface
   - https://opence.mit.edu/

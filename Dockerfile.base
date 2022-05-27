@@ -142,13 +142,14 @@ RUN set -x && \
         --prefix="${CONDA_DIR}" \
         --yes \
         "${PYTHON_SPECIFIER}" \
-        'mamba' \
         'notebook' \
         'jupyterhub' \
         'jupyterlab' \ 
         ##### LEHRIG ####
         # ----
         'pip' \
+        'conda=4.12.0' \
+        'mamba' \
         # Huggingface Datasets deps
         'orc' \
         'numpy' \
@@ -177,6 +178,7 @@ RUN set -x && \
     rm micromamba && \
     # Pin major.minor version of python
     mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
+    echo "conda=4.12.0" >> "${CONDA_DIR}/conda-meta/pinned" && \
     jupyter notebook --generate-config && \
     mamba clean --all -f -y && \
     npm cache clean --force && \

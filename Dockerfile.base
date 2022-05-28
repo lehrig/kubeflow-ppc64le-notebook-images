@@ -152,8 +152,8 @@ RUN set -x && \
         'conda=4.12.0' \
         'mamba' \
         # Huggingface Datasets deps
-        "arrow-cpp=7.0.0" \
-        "pyarrow=7.0.0" \
+        "opence.mit.edu/linux-ppc64le::arrow-cpp=7.0.0" \
+        "opence.mit.edu/linux-ppc64le::pyarrow=7.0.0" \
         'orc' \
         'numpy' \
         'pandas' \
@@ -182,8 +182,8 @@ RUN set -x && \
     # Pin major.minor version of python
     mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
     echo "conda=4.12.0" >> "${CONDA_DIR}/conda-meta/pinned" && \
-    echo "arrow-cpp=7.0.0" >> "${CONDA_DIR}/conda-meta/pinned" && \
-    echo "pyarrow=7.0.0" >> "${CONDA_DIR}/conda-meta/pinned" && \
+    echo "opence.mit.edu/linux-ppc64le::arrow-cpp=7.0.0" >> "${CONDA_DIR}/conda-meta/pinned" && \
+    echo "opence.mit.edu/linux-ppc64le::pyarrow=7.0.0" >> "${CONDA_DIR}/conda-meta/pinned" && \
     jupyter notebook --generate-config && \
     mamba clean --all -f -y && \
     npm cache clean --force && \

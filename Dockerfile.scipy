@@ -59,6 +59,12 @@ RUN mamba install --quiet --yes \
     'sympy' \
     'widgetsnbextension'\
     'xlrd' && \
+    pip install --quiet --no-cache-dir \
+    ##################
+    # pip packages
+    "librosa" \
+    && \
+    ##################
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"

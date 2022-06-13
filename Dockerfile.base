@@ -154,13 +154,14 @@ RUN set -x && \
         # Huggingface Datasets deps
         "https://opence.mit.edu/linux-ppc64le::arrow-cpp==7.0.0=py38hf2c8803_2_cpu" \
         "https://opence.mit.edu/linux-ppc64le::pyarrow==7.0.0=py38hfc345c5_2_cpu" \
-        'orc' \
-        'numpy' \
-        'pandas' \
-        'pillow' \
         'blas' \
         'brotli' \
         'datasets>=2.1.0' \ 
+        'numpy' \
+        'orc' \
+        'pandas' \
+        'pillow' \
+        'transformers' \
         # Elyra deps
         'nodejs>=12.0.0' \
         'pynacl' \

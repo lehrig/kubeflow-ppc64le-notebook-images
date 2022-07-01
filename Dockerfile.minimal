@@ -1,7 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 ARG OWNER=quay.io/ibm
-ARG ELYRA_VERSION=3.9.0
+ARG ELYRA_VERSION=3.9.1
 ARG PYTHON_VERSION=3.8
 
 ARG BASE_CONTAINER=$OWNER/kubeflow-notebook-image-ppc64le:elyra$ELYRA_VERSION-py$PYTHON_VERSION-base
@@ -18,6 +18,10 @@ USER root
 # Install all OS dependencies for fully functional notebook server
 RUN apt-get update --yes && \
     apt-get install --yes --no-install-recommends \
+    ##### LEHRIG ####
+    # Install OpenSSH server for MPI to communicate between containers
+    openssh-server \
+    ##### /LEHRIG ###
     # Common useful utilities
     git \
     nano-tiny \
@@ -36,7 +40,18 @@ RUN apt-get update --yes && \
     texlive-xetex \
     texlive-fonts-recommended \
     texlive-plain-generic && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    ##### LEHRIG ####
+    # Allow OpenSSH to talk to containers without asking for confirmation
+    # by disabling StrictHostKeyChecking.
+    # mpi-operator mounts the .ssh folder from a Secret. For that to work, we need
+    # to disable UserKnownHostsFile to avoid write permissions.
+    # Disabling StrictModes avoids directory and files read permission checks.
+    mkdir -p /var/run/sshd && \
+    sed -i 's/[ #]\(.*StrictHostKeyChecking \).*/ \1no/g' /etc/ssh/ssh_config && \
+    echo "    UserKnownHostsFile /dev/null" >> /etc/ssh/ssh_config && \
+    sed -i 's/#\(StrictModes \).*/\1no/g' /etc/ssh/sshd_config
+    ##### /LEHRIG ###
 
 # Create alternative for nano -> nano-tiny
 RUN update-alternatives --install /usr/bin/nano nano /bin/nano-tiny 10

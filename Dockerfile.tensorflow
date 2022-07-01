@@ -9,8 +9,6 @@ ARG SUPPORT_GPU=true
 ARG BASE_CONTAINER=$OWNER/kubeflow-notebook-image-ppc64le:elyra$ELYRA_VERSION-py$PYTHON_VERSION-scipy
 FROM $BASE_CONTAINER
 
-ENV TENSORFLOW="tensorflow"
-
 LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
@@ -18,7 +16,8 @@ LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Install Tensorflow
-RUN mamba install --quiet --yes \
+RUN if [[ "$SUPPORT_GPU" = true ]]; then TENSORFLOW="tensorflow"; else TENSORFLOW="tensorflow-cpu"; fi \
+    mamba install --quiet --yes \
     "${TENSORFLOW}=${TENSORFLOW_VERSION}" \
     "tf_utils" \
     "tensorflow_datasets" \

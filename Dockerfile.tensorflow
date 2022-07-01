@@ -9,7 +9,7 @@ ARG SUPPORT_GPU=true
 ARG BASE_CONTAINER=$OWNER/kubeflow-notebook-image-ppc64le:elyra$ELYRA_VERSION-py$PYTHON_VERSION-scipy
 FROM $BASE_CONTAINER
 
-ENV TENSORFLOW=$(if [ "$SUPPORT_GPU" = true ]; then echo "tensorflow"; else echo "tensorflow-cpu"; fi)
+ENV TENSORFLOW="tensorflow"
 
 LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 

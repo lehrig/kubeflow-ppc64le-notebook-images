@@ -29,6 +29,7 @@ cd kubeflow-ppc64le-notebook-images
 export ELYRA_VERSION=3.8.0
 export PYTHON_VERSION=3.8
 export TENSORFLOW_VERSION=2.8.0
+export SUPPORT_GPU=true
 
 export IMAGE=quay.io/ibm/kubeflow-notebook-image-ppc64le
 export TAG=elyra${ELYRA_VERSION}-py${PYTHON_VERSION}
@@ -50,10 +51,10 @@ export TARGET_DOCKER_FILE=Dockerfile.base
 
 #### Option (a): Podman
 ```
-podman build --format docker --squash --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION -t $TARGET -f $TARGET_DOCKER_FILE .
+podman build --format docker --squash --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg SUPPORT_GPU=$SUPPORT_GPU -t $TARGET -f $TARGET_DOCKER_FILE .
 ```
 
 #### Option (b): Docker
 ```
-docker build --squash --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION -t $TARGET -f $TARGET_DOCKER_FILE .
+docker build --squash --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg SUPPORT_GPU=$SUPPORT_GPU -t $TARGET -f $TARGET_DOCKER_FILE .
 ```

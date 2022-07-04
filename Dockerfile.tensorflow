@@ -20,7 +20,7 @@ RUN if [ $SUPPORT_GPU=true ]; then TENSORFLOW="tensorflow"; else TENSORFLOW="ten
     mamba install --quiet --yes \
     "horovod" \
     "${TENSORFLOW}=${TENSORFLOW_VERSION}" \
-    "tensorflow_datasets" \ 
+    "tensorflow-datasets" \ 
     && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \

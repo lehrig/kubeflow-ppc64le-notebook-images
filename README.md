@@ -1,6 +1,6 @@
 # Kubeflow Notebook Images for ppc64le
 
-Notebook images for ppc64le (IBM Power processor architecture) compliant with [Kubeflow Notebook Server](https://www.kubeflow.org/docs/notebooks/).
+Notebook images for ppc64le (IBM Power processor architecture) compliant with [Kubeflow Notebooks](https://www.kubeflow.org/docs/components/notebooks/).
 Images are based on [Jupyter's Docker-Stacks](https://github.com/jupyter/docker-stacks) with a base (+ Elyra, Huggingface Datasets) > minimal > SciPy > TensorFlow/PyTorch > Kubeflow stack.
 
 ### Features
@@ -9,7 +9,8 @@ Images are based on [Jupyter's Docker-Stacks](https://github.com/jupyter/docker-
 - TensorFlow / PyTorch
 - Kubeflow pipelines SDK
 - [Elyra](https://github.com/elyra-ai/elyra) integrated in Jupyter Lab
-- Package management via [Conda](https://docs.conda.io)
+- Integrated catalog of reusable Kubeflow components
+- Package management via [Mamba](https://github.com/mamba-org/mamba)
 - Fully OpenShift-compliant (rootless support), kudos to [Graham Dumpleton](https://www.openshift.com/blog/jupyter-on-openshift-part-6-running-as-an-assigned-user-id)
 
 ### Pre-Build Images

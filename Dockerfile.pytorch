@@ -14,7 +14,6 @@ RUN if [ $SUPPORT_GPU = true ]; then PYTORCH="pytorch=${PYTORCH_VERSION}=cuda11.
     mamba install --quiet --yes \
     "pytorch-base=${PYTORCH_VERSION}" \
     "${PYTORCH}" \
-    #'av>8.0.3' \
     && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \

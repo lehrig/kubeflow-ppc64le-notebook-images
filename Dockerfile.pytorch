@@ -9,11 +9,12 @@ LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 ARG PYTORCH_VERSION=1.10.2
 ARG SUPPORT_GPU=true
 
-RUN if [ $SUPPORT_GPU = true ]; then PYTORCH="pytorch=1.10.2=cuda11.2_py38_1"; else PYTORCH="pytorch-cpu=1.10.2"; fi && \
+RUN if [ $SUPPORT_GPU = true ]; then PYTORCH="pytorch=${PYTORCH_VERSION}=cuda11.2_py38_1"; else PYTORCH="pytorch-cpu=${PYTORCH_VERSION}"; fi && \
+    conda config --prepend channels https://ftp.osuosl.org/pub/open-ce/1.6.1 && \
     mamba install --quiet --yes \
-    av=9.2.0 \
-    "pytorch-base" \
+    "pytorch-base=${PYTORCH_VERSION}" \
     "${PYTORCH}" \
+    #'av>8.0.3' \
     && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \

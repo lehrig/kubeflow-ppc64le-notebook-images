@@ -1,0 +1,21 @@
+ARG OWNER=quay.io/ibm
+ARG ELYRA_VERSION=3.9.1
+ARG PYTHON_VERSION=3.8
+ARG PYTORCH_VERSION=1.10.2
+ARG PROC=cpu
+ARG ONNX_VERSION=1.11.0
+
+ARG BASE_CONTAINER=$OWNER/kubeflow-notebook-image-ppc64le:elyra$ELYRA_VERSION-py$PYTHON_VERSION-pytorch-$PROC$PYTORCH_VERSION
+FROM $BASE_CONTAINER
+LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
+
+ARG SUPPORT_GPU=true
+
+RUN conda config --prepend channels https://ftp.osuosl.org/pub/open-ce/1.6.1 && \
+    mamba install --quiet --yes \
+    "onnxruntime=${ONNX_VERSION}" \
+    "onnx=${ONNX_VERSION}" \
+    && \
+    mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"

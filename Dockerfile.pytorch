@@ -1,6 +1,7 @@
 ARG OWNER=quay.io/ibm
-ARG ELYRA_VERSION=3.9.1
+ARG ELYRA_VERSION=3.10.1
 ARG PYTHON_VERSION=3.8
+ARG ONNX_VERSION=1.11.0
 
 ARG BASE_CONTAINER=$OWNER/kubeflow-notebook-image-ppc64le:elyra$ELYRA_VERSION-py$PYTHON_VERSION-min
 FROM $BASE_CONTAINER
@@ -14,6 +15,8 @@ RUN if [ $SUPPORT_GPU = true ]; then PYTORCH="pytorch=${PYTORCH_VERSION}=cuda11.
     mamba install --quiet --yes \
     "pytorch-base=${PYTORCH_VERSION}" \
     "${PYTORCH}" \
+    "onnxruntime=${ONNX_VERSION}" \
+    "onnx=${ONNX_VERSION}" \
     && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \

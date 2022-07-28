@@ -1,7 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 ARG OWNER=quay.io/ibm
-ARG ELYRA_VERSION=3.9.1
+ARG ELYRA_VERSION=3.10.1
 ARG PYTHON_VERSION=3.8
 ARG TENSORFLOW_VERSION=2.8.0
 ARG SUPPORT_GPU=true
@@ -21,6 +21,7 @@ RUN if [ $SUPPORT_GPU=true ]; then TENSORFLOW="tensorflow"; else TENSORFLOW="ten
     "horovod" \
     "${TENSORFLOW}=${TENSORFLOW_VERSION}" \
     "tensorflow-datasets" \ 
+    "transformers" \
     && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \

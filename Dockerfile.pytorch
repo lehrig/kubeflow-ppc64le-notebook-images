@@ -2,8 +2,9 @@ ARG OWNER=quay.io/ibm
 ARG ELYRA_VERSION=3.10.1
 ARG PYTHON_VERSION=3.8
 ARG ONNX_VERSION=1.11.0
+ARG BASE_MINOR_RELEASE=0
 
-ARG BASE_CONTAINER=$OWNER/kubeflow-notebook-image-ppc64le:elyra$ELYRA_VERSION-py$PYTHON_VERSION-min
+ARG BASE_CONTAINER=$OWNER/kubeflow-notebook-image-ppc64le:elyra$ELYRA_VERSION-py$PYTHON_VERSION-min-v$BASE_MINOR_RELEASE
 FROM $BASE_CONTAINER
 LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 

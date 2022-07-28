@@ -157,7 +157,7 @@ RUN set -x && \
         'pip' \
         'conda=4.12.0' \
         'mamba' \
-	'libgfortran-ng=7.5.0' \
+	# 'libgfortran-ng=7.5.0' \
         # Huggingface Datasets deps
         "https://opence.mit.edu/linux-ppc64le::arrow-cpp==7.0.0=py38hf2c8803_2_cpu" \
         "https://opence.mit.edu/linux-ppc64le::pyarrow==7.0.0=py38hfc345c5_2_cpu" \

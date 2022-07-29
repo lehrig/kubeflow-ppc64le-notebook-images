@@ -12,7 +12,6 @@ ARG PYTORCH_VERSION=1.10.2
 ARG SUPPORT_GPU=true
 
 RUN if [ $SUPPORT_GPU = true ]; then PYTORCH="pytorch=${PYTORCH_VERSION}=cuda11.2_py38_1"; else PYTORCH="pytorch-cpu=${PYTORCH_VERSION}"; fi && \
-    conda config --prepend channels https://ftp.osuosl.org/pub/open-ce/1.6.1 && \
     mamba install --quiet --yes \
     'libgfortran-ng' \
     "onnx=${ONNX_VERSION}" \

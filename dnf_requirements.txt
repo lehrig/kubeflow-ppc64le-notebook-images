@@ -3,10 +3,12 @@ ca-certificates
 curl
 dvipng
 git
+glibc-langpack-en
 inkscape
 ffmpeg
 jq
 liberation-fonts
+libffi
 libsndfile
 libstdc++*
 openssh-server

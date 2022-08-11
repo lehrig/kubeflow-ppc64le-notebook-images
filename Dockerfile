@@ -1,7 +1,12 @@
-# Note:
+# Note - parts of this file are under:
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-ARG ROOT_CONTAINER=registry.access.redhat.com/ubi8/ubi:8.6
+
+# Options:
+# - AlmaLinux (default; e.g., quay.io/almalinux/almalinux:8.6)
+# - UBI (ensure active subscriptions at host; e.g., registry.access.redhat.com/ubi8/ubi:8.6)
+# - CentOS (e.g., quay.io/centos/centos:stream8)
+ARG ROOT_CONTAINER=quay.io/almalinux/almalinux:8.6
 FROM $ROOT_CONTAINER
 LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 
@@ -15,7 +20,9 @@ ARG ONNX_VERSION=1.11.0
 # Pin python version here, or set it to "default"
 ARG PYTHON_VERSION=3.8
 ARG SUPPORT_GPU=true
-ARG TARGETPLATFORM
+# Arch is automatically provided by buildx
+# See: https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
 ARG TENSORFLOW_VERSION=2.8.0
 
 ENV CONDA_DIR=/opt/conda \
@@ -41,25 +48,26 @@ COPY dnf_requirements.txt dnf_requirements.txt
 # All root-related
 RUN chmod a+rx /usr/local/bin/fix-permissions && \
     # dnf
+    # See: https://rpmfusion.org/Configuration
     dnf -y install \
-    https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm \
-    https://download1.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm \
-    https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm \
-    https://repo.almalinux.org/almalinux/8/PowerTools/aarch64/os/Packages/opencl-filesystem-1.0-6.el8.noarch.rpm \
+        dnf-plugins-core \
+        https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm \
+        https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm \
+        https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm \
     && \
-    echo "Checking arch..." && \
-    if [ "${TARGETPLATFORM}" = "ppc64le" ]; then \
-        echo "ppc64le!" && \
-        dnf -y install https://rpmfind.net/linux/centos/8-stream/PowerTools/ppc64le/os/Packages/SDL2-2.0.10-2.el8.ppc64le.rpm && \
-        echo "Done!"; \
+    # Fix for librose, which needs libffi.so.7
+    if [ "${TARGETARCH}" = "ppc64le" ]; then \
+        dnf -y install https://rpmfind.net/linux/opensuse/distribution/leap/15.3/repo/oss/ppc64le/libffi7-3.2.1.git259-10.8.ppc64le.rpm ; \
     fi && \
+    dnf config-manager --set-enabled powertools && \
     dnf makecache --refresh && \
-    dnf upgrade && \
-    dnf -y group install "Development Tools" && \
+    dnf -y upgrade && \
+    dnf -y groupinstall "Development Tools" && \
     dnf -y install $(cat dnf_requirements.txt) && \
     dnf clean all && rm -rf /var/cache/dnf/* && rm -rf /var/cache/yum  && \
+    rm -f dnf_requirements.txt && \
     # kubectl
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/${TARGETPLATFORM}/kubectl && \
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl && \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl && \
     # Allow OpenSSH to talk to containers without asking for confirmation
@@ -117,27 +125,29 @@ WORKDIR /tmp
 RUN mkdir "/home/${NB_USER}/work" && \
     fix-permissions "/home/${NB_USER}" && \
     set -x && \
-    if [ "${TARGETPLATFORM}" = "x86_64" ]; then \
+    if [ "${TARGETARCH}" = "x86_64" ]; then \
         # Should be simpler, see <https://github.com/mamba-org/mamba/issues/1437>
-        TARGETPLATFORM="64"; \
+        TARGETARCH="64"; \
     fi && \
     wget -qO /tmp/micromamba.tar.bz2 \
-        "https://micromamba.snakepit.net/api/micromamba/linux-${TARGETPLATFORM}/latest" && \
+        "https://micromamba.snakepit.net/api/micromamba/linux-${TARGETARCH}/latest" && \
     tar -xvjf /tmp/micromamba.tar.bz2 --strip-components=1 bin/micromamba && \
     rm /tmp/micromamba.tar.bz2 && \
     PYTHON_SPECIFIER="python=${PYTHON_VERSION}" && \
     if [[ "${PYTHON_VERSION}" == "default" ]]; then PYTHON_SPECIFIER="python"; fi && \
-    if [ "${TARGETPLATFORM}" == "aarch64" ]; then \
+    if [ "${TARGETARCH}" == "aarch64" ]; then \
         # Prevent libmamba from sporadically hanging on arm64 under QEMU
         # <https://github.com/mamba-org/mamba/issues/1611>
         # We don't use `micromamba config set` since it instead modifies ~/.condarc.
         echo "extract_threads: 1" >> "${CONDA_DIR}/.condarc"; \
     fi && \
     if [ $SUPPORT_GPU=true ]; then TENSORFLOW="tensorflow"; else TENSORFLOW="tensorflow-cpu"; fi && \
-    if [ "${TARGETPLATFORM}" = "ppc64le" ]; then \
-        ARROW='"https://opence.mit.edu/linux-ppc64le::arrow-cpp==7.0.0=py38hf2c8803_2_cpu https://opence.mit.edu/linux-ppc64le::pyarrow==7.0.0=py38hfc345c5_2_cpu"'; \
+    if [ "${TARGETARCH}" = "ppc64le" ]; then \
+        ARROW="https://opence.mit.edu/linux-ppc64le::arrow-cpp==7.0.0=py38hf2c8803_2_cpu" && \
+        PYARROW="https://opence.mit.edu/linux-ppc64le::pyarrow==7.0.0=py38hfc345c5_2_cpu" ; \
     else \
-        ARROW='arrow-cpp pyarrow'; \
+        ARROW="arrow-cpp" && \
+        PYARROW="pyarrow" ; \
     fi && \
     # Install the packages
     ./micromamba install \
@@ -161,6 +171,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'orc' \
         'pandas' \
         'pillow' \
+        "${PYARROW}" \
         'transformers' \
         # Elyra deps
         'nodejs>=12.0.0' \
@@ -200,30 +211,28 @@ RUN mkdir "/home/${NB_USER}/work" && \
         # TENSORFLOW
         "${TENSORFLOW}=${TENSORFLOW_VERSION}" \
         "tensorflow-datasets" \ 
+        "tf2onnx" \
         "transformers" \
         "onnx=${ONNX_VERSION}" \
         "onnxruntime=${ONNX_VERSION}" \
         # ----        
-        && \
-        #mamba update --all --quiet --yes && \
-        mkdir ~/.pip && \
-        echo "[global]" >> ~/.pip/pip.conf && \
-        echo "extra-index-url = https://repo.fury.io/mgiessing" >> ~/.pip/pip.conf && \
-        pip install --prefer-binary --quiet --no-cache-dir \
+    && \
+    mkdir ~/.pip && \
+    echo "[global]" >> ~/.pip/pip.conf && \
+    echo "extra-index-url = https://repo.fury.io/mgiessing" >> ~/.pip/pip.conf && \
+    pip install --prefer-binary --quiet --no-cache-dir \
         ##################
         # pip packages
         "elyra[all]==${ELYRA_VERSION}" \
         "librosa" \
-        ##################
-        && \
-        jupyter lab build \
-        ##################
-        ##### /LEHRIG ###
+        #################
+    && \
+    jupyter lab build && \
     rm micromamba && \
     # Pin major.minor version of python
     mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
     echo "conda=4.12.0" >> "${CONDA_DIR}/conda-meta/pinned" && \
-    if [ "${TARGETPLATFORM}" = "ppc64le" ]; then \
+    if [ "${TARGETARCH}" = "ppc64le" ]; then \
         echo "https://opence.mit.edu/linux-ppc64le::arrow-cpp==7.0.0=py38hf2c8803_2_cpu" >> "${CONDA_DIR}/conda-meta/pinned" && \
         echo "https://opence.mit.edu/linux-ppc64le::pyarrow==7.0.0=py38hfc345c5_2_cpu" >> "${CONDA_DIR}/conda-meta/pinned"; \
     fi && \

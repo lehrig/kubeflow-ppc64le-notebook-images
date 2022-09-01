@@ -71,13 +71,14 @@ then
     ############################################################
     # Custom Kubeflow components
     elyra-metadata create component-catalogs \
-      --name="extract" \
-      --description="Extract data" \
+      --name="collect" \
+      --description="Collect data" \
       --runtime_type="KUBEFLOW_PIPELINES" \
-      --display_name="Data Extraction" \
-      --categories='["Data Extraction"]' \
+      --display_name="Data Collection" \
+      --categories='["Data Collection"]' \
       --paths="[ \
-        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-extraction/download-and-extract-from-url/component.yaml'
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-collection/download-and-extract-from-url/component.yaml', \
+	'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-collection/load-dataset/component.yaml'
         ]" \
       --schema_name="url-catalog"
        
@@ -100,6 +101,8 @@ then
       --categories='["Model Building"]' \
       --paths="[ \
         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/convert-to-onnx/component.yaml', \
+	'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/plot-confusion-matrix/component.yaml', \
+	'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/train-model-job/component.yaml', \
         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/upload-model/component.yaml'
         ]" \
       --schema_name="url-catalog"

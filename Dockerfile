@@ -125,17 +125,18 @@ WORKDIR /tmp
 RUN mkdir "/home/${NB_USER}/work" && \
     fix-permissions "/home/${NB_USER}" && \
     set -x && \
-    if [ "${TARGETARCH}" = "x86_64" ]; then \
+    MICRO_MAMBA_TARGETARCH=$TARGETARCH && \
+    if [ "${TARGETARCH}" = "amd64" ]; then \
         # Should be simpler, see <https://github.com/mamba-org/mamba/issues/1437>
-        TARGETARCH="64"; \
+        MICRO_MAMBA_TARGETARCH="64"; \
     fi && \
     wget -qO /tmp/micromamba.tar.bz2 \
-        "https://micromamba.snakepit.net/api/micromamba/linux-${TARGETARCH}/latest" && \
+        "https://micromamba.snakepit.net/api/micromamba/linux-${MICRO_MAMBA_TARGETARCH}/latest" && \
     tar -xvjf /tmp/micromamba.tar.bz2 --strip-components=1 bin/micromamba && \
     rm /tmp/micromamba.tar.bz2 && \
     PYTHON_SPECIFIER="python=${PYTHON_VERSION}" && \
     if [[ "${PYTHON_VERSION}" == "default" ]]; then PYTHON_SPECIFIER="python"; fi && \
-    if [ "${TARGETARCH}" == "aarch64" ]; then \
+    if [ "${TARGETARCH}" == "arm" ]; then \
         # Prevent libmamba from sporadically hanging on arm64 under QEMU
         # <https://github.com/mamba-org/mamba/issues/1611>
         # We don't use `micromamba config set` since it instead modifies ~/.condarc.

@@ -16,14 +16,13 @@ ARG KUBECTL_VERSION=v1.21.11
 ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_GID="100"
-ARG ONNX_VERSION=1.11.0
 # Pin python version here, or set it to "default"
 ARG PYTHON_VERSION=3.8
 ARG SUPPORT_GPU=true
 # Arch is automatically provided by buildx
 # See: https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
-ARG TENSORFLOW_VERSION=2.8.0
+ARG TENSORFLOW_VERSION=2.8.1
 
 ENV CONDA_DIR=/opt/conda \
     SHELL=/bin/bash \
@@ -202,7 +201,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'opencv' \
         'scikit-image' \
         'scikit-learn' \
-        'scipy==1.7.3' \
+        'scipy' \
         'seaborn' \
         'sqlalchemy' \
         'statsmodels' \
@@ -213,9 +212,8 @@ RUN mkdir "/home/${NB_USER}/work" && \
         "${TENSORFLOW}=${TENSORFLOW_VERSION}" \
         "tensorflow-datasets" \ 
         "tf2onnx" \
-        "transformers" \
-        "onnx=${ONNX_VERSION}" \
-        "onnxruntime=${ONNX_VERSION}" \
+        "onnx" \
+        "onnxruntime" \
         # ----        
     && \
     mkdir ~/.pip && \

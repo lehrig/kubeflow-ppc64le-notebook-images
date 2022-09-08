@@ -4,7 +4,7 @@ Notebook images for ppc64le (IBM Power processor architecture) compliant with [K
 Images are inspired by [Jupyter's Docker-Stacks](https://github.com/jupyter/docker-stacks) and add Elyra, Huggingface Datasets, and Kubeflow features.
 
 ### Features
-- ppc64le architecture support
+- multiarch support (ppc64le & x86)
 - Jupyter Lab incl. LaTeX support
 - TensorFlow / PyTorch
 - Kubeflow pipelines SDK
@@ -30,9 +30,9 @@ Go to my kubeflow-notebook-image repository at [IBM's quay.io page](https://quay
 git clone https://github.com/lehrig/kubeflow-ppc64le-notebook-images
 cd kubeflow-ppc64le-notebook-images
 
-export ELYRA_VERSION=3.10.1
+export ELYRA_VERSION=3.11.1
 export PYTHON_VERSION=3.8
-export TENSORFLOW_VERSION=2.8.0
+export TENSORFLOW_VERSION=2.8.1
 export SUPPORT_GPU=true
 export MINOR_RELEASE=0
 
@@ -43,10 +43,10 @@ export TARGET=$IMAGE:$TAG
 
 #### Option (a): Podman
 ```
-podman build --format docker --squash --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg SUPPORT_GPU=$SUPPORT_GPU -t $TARGET -f Dockerfile .
+podman build --format docker --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg SUPPORT_GPU=$SUPPORT_GPU -t $TARGET -f Dockerfile --platform linux/amd64,linux/ppc64le --push .
 ```
 
 #### Option (b): Docker
 ```
-docker build --squash --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg SUPPORT_GPU=$SUPPORT_GPU -t $TARGET -f Dockerfile .
+docker build --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg SUPPORT_GPU=$SUPPORT_GPU -t $TARGET -f Dockerfile --platform linux/amd64,linux/ppc64le --push .
 ```

@@ -224,6 +224,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         # pip packages
         "elyra[all]==${ELYRA_VERSION}" \
         "librosa" \
+        "trino" \
         #################
     && \
     jupyter lab build && \

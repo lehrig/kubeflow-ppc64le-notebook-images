@@ -30,23 +30,38 @@ Go to my kubeflow-notebook-image repository at [IBM's quay.io page](https://quay
 git clone https://github.com/lehrig/kubeflow-ppc64le-notebook-images
 cd kubeflow-ppc64le-notebook-images
 
-export ELYRA_VERSION=3.11.1
+export ELYRA_VERSION=3.13.0
 export PYTHON_VERSION=3.8
-export TENSORFLOW_VERSION=2.8.1
+export TENSORFLOW_VERSION=2.9.2
+export PYTORCH_VERSION=1.12.1
 export SUPPORT_GPU=true
 export MINOR_RELEASE=0
 
 export IMAGE=quay.io/ibm/kubeflow-notebook-image-ppc64le
-export TAG=elyra${ELYRA_VERSION}-py${PYTHON_VERSION}-tf${TENSORFLOW_VERSION}-v${MINOR_RELEASE}
+export TAG=elyra${ELYRA_VERSION}-py${PYTHON_VERSION}-tf${TENSORFLOW_VERSION}-pt${PYTORCH_VERSION}-v${MINOR_RELEASE}
 export TARGET=$IMAGE:$TAG
 ```
 
 #### Option (a): Podman
 ```
-podman build --format docker --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg SUPPORT_GPU=$SUPPORT_GPU -t $TARGET -f Dockerfile --platform linux/amd64,linux/ppc64le --push .
+podman buildx build --format docker --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg PYTORCH_VERSION=$PYTORCH_VERSION --build-arg SUPPORT_GPU=$SUPPORT_GPU -t $TARGET -f Dockerfile --platform linux/amd64,linux/ppc64le --push .
 ```
 
 #### Option (b): Docker
 ```
-docker build --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg SUPPORT_GPU=$SUPPORT_GPU -t $TARGET -f Dockerfile --platform linux/amd64,linux/ppc64le --push .
+docker buildx build --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION --build-arg PYTORCH_VERSION=$PYTORCH_VERSION --build-arg SUPPORT_GPU=$SUPPORT_GPU -t $TARGET -f Dockerfile --platform linux/amd64,linux/ppc64le --push .
 ```
+
+#### Optional: Split build & push
+Some environments might have a slow upstream, where it makes sense to split the build and the push parts of the build (see https://github.com/docker/buildx/issues/1315).
+
+For building into the cache, replace ``--push` of the docker/podman command with this:
+```
+--cache-to=type=local,dest=cache,mode=max
+```
+
+For pushing from cache to your image registry, add to the docker/podman command:
+```
+--cache-from=type=local,src=cache
+```
+

@@ -10,19 +10,20 @@ ARG ROOT_CONTAINER=quay.io/almalinux/almalinux:8.6
 FROM $ROOT_CONTAINER
 LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 
-ARG ELYRA_VERSION=3.10.1
+ARG ELYRA_VERSION=3.13.0
 # highest kubeflow-supported release
-ARG KUBECTL_VERSION=v1.21.11
+ARG KUBECTL_VERSION=v1.24.8
 ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_GID="100"
 # Pin python version here, or set it to "default"
 ARG PYTHON_VERSION=3.8
+ARG PYTORCH_VERSION=1.12.1
 ARG SUPPORT_GPU=true
 # Arch is automatically provided by buildx
 # See: https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
-ARG TENSORFLOW_VERSION=2.8.1
+ARG TENSORFLOW_VERSION=2.9.2
 
 ENV CONDA_DIR=/opt/conda \
     SHELL=/bin/bash \
@@ -68,6 +69,7 @@ RUN chmod a+rx /usr/local/bin/fix-permissions && \
     # kubectl
     curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl && \
     chmod +x ./kubectl && \
+    cp ./kubectl /usr/local/bin/oc && \
     mv ./kubectl /usr/local/bin/kubectl && \
     # Allow OpenSSH to talk to containers without asking for confirmation
     # by disabling StrictHostKeyChecking.
@@ -141,16 +143,20 @@ RUN mkdir "/home/${NB_USER}/work" && \
         # We don't use `micromamba config set` since it instead modifies ~/.condarc.
         echo "extract_threads: 1" >> "${CONDA_DIR}/.condarc"; \
     fi && \
-    if [ $SUPPORT_GPU=true ]; then TENSORFLOW="tensorflow"; else TENSORFLOW="tensorflow-cpu"; fi && \
+    if [ $SUPPORT_GPU=true ]; then TENSORFLOW="tensorflow" && PYTORCH="pytorch"; else TENSORFLOW="tensorflow-cpu" && PYTORCH="pytorch-cpu"; fi && \
     if [ "${TARGETARCH}" = "ppc64le" ]; then \
-        ARROW="https://opence.mit.edu/linux-ppc64le::arrow-cpp==7.0.0=py38hf2c8803_2_cpu" && \
-        PYARROW="https://opence.mit.edu/linux-ppc64le::pyarrow==7.0.0=py38hfc345c5_2_cpu" ; \
+        ARROW="arrow-cpp" && \
+        PYARROW="pyarrow" ; \
+        #ARROW="https://opence.mit.edu/linux-ppc64le::arrow-cpp==7.0.0=py38hf2c8803_2_cpu" && \
+        #PYARROW="https://opence.mit.edu/linux-ppc64le::pyarrow==7.0.0=py38hfc345c5_2_cpu" ; \
     else \
+        if [ "${TENSORFLOW_VERSION}" = "2.9.2" ]; then TENSORFLOW_VERSION=2.9.1; fi && \
         ARROW="arrow-cpp" && \
         PYARROW="pyarrow" ; \
     fi && \
     # Install the packages
-    ./micromamba install \
+    # Conda see: https://conda-forge.org/docs/user/tipsandtricks.html#installing-cuda-enabled-packages-like-tensorflow-and-pytorch
+    CONDA_OVERRIDE_CUDA="11.2" ./micromamba install \
         --root-prefix="${CONDA_DIR}" \
         --prefix="${CONDA_DIR}" \
         --yes \
@@ -159,9 +165,12 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'jupyterhub' \
         'jupyterlab' \ 
         # LEHRIG
-        'pip' \
-        'conda=4.12.0' \
+        'boto3' \
+        'conda' \
         'mamba' \
+        'pip' \
+        # 'horovod' \
+        'openmpi' \
         # Huggingface Datasets deps
         "${ARROW}" \
         'blas' \
@@ -208,6 +217,8 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'sympy' \
         'widgetsnbextension'\
         'xlrd' \
+        # PYTORCH
+        "${PYTORCH}=${PYTORCH_VERSION}" \
         # TENSORFLOW
         "${TENSORFLOW}=${TENSORFLOW_VERSION}" \
         "tensorflow-datasets" \ 
@@ -223,6 +234,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         ##################
         # pip packages
         "elyra[all]==${ELYRA_VERSION}" \
+        "horovod" \
         "librosa" \
         "trino" \
         #################
@@ -232,10 +244,12 @@ RUN mkdir "/home/${NB_USER}/work" && \
     # Pin major.minor version of python
     mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
     echo "conda=4.12.0" >> "${CONDA_DIR}/conda-meta/pinned" && \
-    if [ "${TARGETARCH}" = "ppc64le" ]; then \
-        echo "https://opence.mit.edu/linux-ppc64le::arrow-cpp==7.0.0=py38hf2c8803_2_cpu" >> "${CONDA_DIR}/conda-meta/pinned" && \
-        echo "https://opence.mit.edu/linux-ppc64le::pyarrow==7.0.0=py38hfc345c5_2_cpu" >> "${CONDA_DIR}/conda-meta/pinned"; \
-    fi && \
+    echo "${TENSORFLOW}=${TENSORFLOW_VERSION}" >> "${CONDA_DIR}/conda-meta/pinned" && \
+    echo "${PYTORCH}=${PYTORCH_VERSION}" >> "${CONDA_DIR}/conda-meta/pinned" && \
+    # if [ "${TARGETARCH}" = "ppc64le" ]; then \
+    #     echo "https://opence.mit.edu/linux-ppc64le::arrow-cpp==7.0.0=py38hf2c8803_2_cpu" >> "${CONDA_DIR}/conda-meta/pinned" && \
+    #     echo "https://opence.mit.edu/linux-ppc64le::pyarrow==7.0.0=py38hfc345c5_2_cpu" >> "${CONDA_DIR}/conda-meta/pinned"; \
+    # fi && \
     jupyter notebook --generate-config && \
     mamba clean --all -f -y && \
     npm cache clean --force && \

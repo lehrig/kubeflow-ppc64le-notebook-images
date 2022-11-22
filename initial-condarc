@@ -8,6 +8,7 @@ channels:
   - https://repo.anaconda.com/pkgs/main
   - https://repo.anaconda.com/pkgs/r
   - https://opence.mit.edu/
-  - https://ftp.osuosl.org/pub/open-ce/1.6.1/
+  - https://ftp.osuosl.org/pub/open-ce/1.7.2/
   - mgiessing
+  - deepmodeling
   - conda-forge

@@ -18,6 +18,7 @@ nano
 openssh-server
 psmisc
 sudo
+telnet
 texlive-xetex
 texlive-collection-fontsrecommended
 texlive-cm-super

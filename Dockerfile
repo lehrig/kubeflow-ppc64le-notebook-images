@@ -23,7 +23,7 @@ ARG SUPPORT_GPU=true
 # Arch is automatically provided by buildx
 # See: https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
-ARG TENSORFLOW_VERSION=2.9.2
+ARG TENSORFLOW_VERSION=2.9.1
 
 ENV CONDA_DIR=/opt/conda \
     SHELL=/bin/bash \
@@ -146,12 +146,12 @@ RUN mkdir "/home/${NB_USER}/work" && \
     if [ $SUPPORT_GPU=true ]; then TENSORFLOW="tensorflow" && PYTORCH="pytorch"; else TENSORFLOW="tensorflow-cpu" && PYTORCH="pytorch-cpu"; fi && \
     if [ "${TARGETARCH}" = "ppc64le" ]; then \
         ARROW="arrow-cpp" && \
+        HOROVOD="horovod=0.25.0" && \
         PYARROW="pyarrow" ; \
-        #ARROW="https://opence.mit.edu/linux-ppc64le::arrow-cpp==7.0.0=py38hf2c8803_2_cpu" && \
-        #PYARROW="https://opence.mit.edu/linux-ppc64le::pyarrow==7.0.0=py38hfc345c5_2_cpu" ; \
     else \
         if [ "${TENSORFLOW_VERSION}" = "2.9.2" ]; then TENSORFLOW_VERSION=2.9.1; fi && \
         ARROW="arrow-cpp" && \
+        HOROVOD='deepmodeling::horovod==0.25.0=horovod-0.25.0-py38h6a4de79_0' && \
         PYARROW="pyarrow" ; \
     fi && \
     # Install the packages
@@ -169,7 +169,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'conda' \
         'mamba' \
         'pip' \
-        # 'horovod' \
+	"${HOROVOD}" \
         'openmpi' \
         # Huggingface Datasets deps
         "${ARROW}" \
@@ -235,7 +235,6 @@ RUN mkdir "/home/${NB_USER}/work" && \
         ##################
         # pip packages
         "elyra[all]==${ELYRA_VERSION}" \
-        "horovod" \
         "librosa" \
         "trino" \
         #################

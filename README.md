@@ -55,7 +55,7 @@ docker buildx build --build-arg NB_GID=0 --build-arg ELYRA_VERSION=$ELYRA_VERSIO
 #### Optional: Split build & push
 Some environments might have a slow upstream, where it makes sense to split the build and the push parts of the build (see https://github.com/docker/buildx/issues/1315).
 
-For building into the cache, replace ``--push` of the docker/podman command with this:
+For building into the cache, replace `--push` of the docker/podman command with this:
 ```
 --cache-to=type=local,dest=cache,mode=max
 ```

@@ -175,7 +175,8 @@ RUN mkdir "/home/${NB_USER}/work" && \
         "${ARROW}" \
         'blas' \
         'brotli' \
-        'datasets>=2.1.0' \ 
+        'datasets>=2.1.0' \
+        'etils' \
         'numpy' \
         'orc' \
         'pandas' \

@@ -166,7 +166,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'jupyterlab' \ 
         # LEHRIG
         'boto3' \
-        'conda' \
+        'conda=22.11.1' \
         'mamba' \
         'pip' \
 	"${HOROVOD}" \
@@ -243,7 +243,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
     rm micromamba && \
     # Pin major.minor version of python
     mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
-    echo "conda=4.12.0" >> "${CONDA_DIR}/conda-meta/pinned" && \
+    echo "conda=22.11.1" >> "${CONDA_DIR}/conda-meta/pinned" && \
     echo "${TENSORFLOW}=${TENSORFLOW_VERSION}" >> "${CONDA_DIR}/conda-meta/pinned" && \
     echo "${PYTORCH}=${PYTORCH_VERSION}" >> "${CONDA_DIR}/conda-meta/pinned" && \
     # if [ "${TARGETARCH}" = "ppc64le" ]; then \

@@ -32,7 +32,7 @@ cd kubeflow-ppc64le-notebook-images
 
 export ELYRA_VERSION=3.14.1
 export PYTHON_VERSION=3.8
-export TENSORFLOW_VERSION=2.9.1
+export TENSORFLOW_VERSION=2.9.2
 export PYTORCH_VERSION=1.12.1
 export SUPPORT_GPU=true
 export MINOR_RELEASE=0

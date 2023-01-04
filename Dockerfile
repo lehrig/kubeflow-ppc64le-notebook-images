@@ -23,7 +23,7 @@ ARG SUPPORT_GPU=true
 # Arch is automatically provided by buildx
 # See: https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
-ARG TENSORFLOW_VERSION=2.9.1
+ARG TENSORFLOW_VERSION=2.9.2
 
 ENV CONDA_DIR=/opt/conda \
     SHELL=/bin/bash \
@@ -56,9 +56,8 @@ RUN chmod a+rx /usr/local/bin/fix-permissions && \
         https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm \
     && \
     # Fix for librose, which needs libffi.so.7
-    if [ "${TARGETARCH}" = "ppc64le" ]; then \
-        dnf -y install https://rpmfind.net/linux/opensuse/distribution/leap/15.3/repo/oss/ppc64le/libffi7-3.2.1.git259-10.8.ppc64le.rpm ; \
-    fi && \
+    # --skip-broken ensures that this command does not fail on other archs than ppc64le while avoiding an if statement that breaks docker build caches
+    dnf -y --skip-broken install https://rpmfind.net/linux/opensuse/distribution/leap/15.3/repo/oss/ppc64le/libffi7-3.2.1.git259-10.8.ppc64le.rpm && \
     dnf config-manager --set-enabled powertools && \
     dnf makecache --refresh && \
     dnf -y upgrade && \
@@ -144,15 +143,13 @@ RUN mkdir "/home/${NB_USER}/work" && \
         echo "extract_threads: 1" >> "${CONDA_DIR}/.condarc"; \
     fi && \
     if [ $SUPPORT_GPU=true ]; then TENSORFLOW="tensorflow" && PYTORCH="pytorch"; else TENSORFLOW="tensorflow-cpu" && PYTORCH="pytorch-cpu"; fi && \
+    ARROW="arrow-cpp" && \
+    PYARROW="pyarrow" && \
     if [ "${TARGETARCH}" = "ppc64le" ]; then \
-        ARROW="arrow-cpp" && \
-        HOROVOD="horovod=0.25.0" && \
-        PYARROW="pyarrow" ; \
+        HOROVOD="horovod=0.25.0"; \
     else \
         if [ "${TENSORFLOW_VERSION}" = "2.9.2" ]; then TENSORFLOW_VERSION=2.9.1; fi && \
-        ARROW="arrow-cpp" && \
-        HOROVOD='deepmodeling::horovod==0.25.0=horovod-0.25.0-py38h6a4de79_0' && \
-        PYARROW="pyarrow" ; \
+        HOROVOD='deepmodeling::horovod==0.25.0=horovod-0.25.0-py38h6a4de79_0'; \
     fi && \
     # Install the packages
     # Conda see: https://conda-forge.org/docs/user/tipsandtricks.html#installing-cuda-enabled-packages-like-tensorflow-and-pytorch

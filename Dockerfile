@@ -168,6 +168,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'boto3' \
         'conda=22.11.1' \
         'mamba' \
+	'nb_black' \
         'pip' \
 	"${HOROVOD}" \
         'openmpi' \

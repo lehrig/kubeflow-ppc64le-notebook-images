@@ -30,7 +30,7 @@ Go to my kubeflow-notebook-image repository at [IBM's quay.io page](https://quay
 git clone https://github.com/lehrig/kubeflow-ppc64le-notebook-images
 cd kubeflow-ppc64le-notebook-images
 
-export ELYRA_VERSION=3.13.0
+export ELYRA_VERSION=3.14.1
 export PYTHON_VERSION=3.8
 export TENSORFLOW_VERSION=2.9.1
 export PYTORCH_VERSION=1.12.1

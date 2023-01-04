@@ -10,7 +10,7 @@ ARG ROOT_CONTAINER=quay.io/almalinux/almalinux:8.6
 FROM $ROOT_CONTAINER
 LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 
-ARG ELYRA_VERSION=3.13.0
+ARG ELYRA_VERSION=3.14.1
 # highest kubeflow-supported release
 ARG KUBECTL_VERSION=v1.24.8
 ARG NB_USER="jovyan"

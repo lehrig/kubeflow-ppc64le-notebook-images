@@ -10,6 +10,7 @@ ARG ROOT_CONTAINER=quay.io/almalinux/almalinux:8.6
 FROM $ROOT_CONTAINER
 LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 
+ARG CUDA_VERSION=11.4.4
 ARG ELYRA_VERSION=3.14.1
 # highest kubeflow-supported release
 ARG KUBECTL_VERSION=v1.24.8
@@ -17,7 +18,7 @@ ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_GID="100"
 # Pin python version here, or set it to "default"
-ARG PYTHON_VERSION=3.8
+ARG PYTHON_VERSION=3.9
 ARG PYTORCH_VERSION=1.12.1
 ARG SUPPORT_GPU=true
 # Arch is automatically provided by buildx
@@ -143,8 +144,6 @@ RUN mkdir "/home/${NB_USER}/work" && \
         echo "extract_threads: 1" >> "${CONDA_DIR}/.condarc"; \
     fi && \
     if [ $SUPPORT_GPU=true ]; then TENSORFLOW="tensorflow" && PYTORCH="pytorch"; else TENSORFLOW="tensorflow-cpu" && PYTORCH="pytorch-cpu"; fi && \
-    ARROW="arrow-cpp" && \
-    PYARROW="pyarrow" && \
     if [ "${TARGETARCH}" = "ppc64le" ]; then \
         HOROVOD="horovod=0.25.0"; \
     else \
@@ -153,60 +152,72 @@ RUN mkdir "/home/${NB_USER}/work" && \
     fi && \
     # Install the packages
     # Conda see: https://conda-forge.org/docs/user/tipsandtricks.html#installing-cuda-enabled-packages-like-tensorflow-and-pytorch
-    CONDA_OVERRIDE_CUDA="11.2" ./micromamba install \
+    CONDA_OVERRIDE_CUDA=${CUDA_VERSION} ./micromamba install \
         --root-prefix="${CONDA_DIR}" \
         --prefix="${CONDA_DIR}" \
         --yes \
+        # core packages (most dependencies)
+        "${HOROVOD}" \
         "${PYTHON_SPECIFIER}" \
-        'notebook' \
-        'jupyterhub' \
-        'jupyterlab' \ 
-        # LEHRIG
-        'boto3' \
-        'conda=22.11.1' \
+        "${PYTORCH}=${PYTORCH_VERSION}" \
+        "${TENSORFLOW}=${TENSORFLOW_VERSION}" \
+        'blas=*=openblas' \
+        'opencv' \
+        # 3rd party conda channels (avoid adding such channels as defaults!)
+        'conda-forge::nb_black' \
+        'conda-forge::nodejs>=12.0.0' \
+        'huggingface::datasets>=2.1.0' \
+        # package management
+        'conda' \
         'mamba' \
-	'nb_black' \
         'pip' \
-	"${HOROVOD}" \
-        'openmpi' \
-        # Huggingface Datasets deps
-        "${ARROW}" \
-        'blas' \
-        'brotli' \
-        'datasets>=2.1.0' \
-        'etils' \
-        'numpy' \
-        'orc' \
-        'pandas' \
-        'pillow' \
-        "${PYARROW}" \
-        'transformers' \
-        # Elyra deps
-        'nodejs>=12.0.0' \
-        'pynacl' \
-        'regex' \
-        'ujson' \
-        # SCIPY
+        # jupyter
+        # see: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
+        'jupyterhub' \
+        'jupyterlab' \
+        'notebook' \
+        # additional packages (alphabetical order)
+        # mainly based on scipy-notebook; extended by some other common packages
+        # see: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile
         'altair' \
+        'arrow' \
+        'bcrypt' \
         'beautifulsoup4' \
         'bokeh' \
+        'boto3' \
         'bottleneck' \
+        'brotli' \
         'cloudpickle' \
-        'conda-forge::blas=*=openblas' \
         'cython' \
         'dask' \
         'dill' \
+        'dm-tree' \
+        'etils' \
+        'gensim' \
         'h5py' \
         'ipympl'\
         'ipywidgets' \
+        'jupyter_enterprise_gateway' \
+        'kedro' \
+        'matplotlib' \
         'matplotlib-base' \
         'numba' \
         'numexpr' \
+        'numpy' \
+        'onnx' \
+        'onnxruntime' \
+        'openmpi' \
+        'openpyxl' \
+        'orc' \
         'pandas' \
         'patsy' \
+        'pillow' \
         'protobuf' \
+        'py-xgboost' \
+        'pyarrow' \
+        'pynacl' \
         'pytables' \
-        'opencv' \
+        'regex' \
         'scikit-image' \
         'scikit-learn' \
         'scipy' \
@@ -214,40 +225,42 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'sqlalchemy' \
         'statsmodels' \
         'sympy' \
+        'tensorboard' \
+        'tensorflow-addons' \
+        'tensorflow-datasets' \
+        'tensorflow-hub' \
+        'tensorflow-model-optimization' \
+        'tensorflow-probability' \
+        'tensorflow-text' \
+        'tf2onnx' \
+        'torchvision' \
+        'transformers' \
+        'ujson' \
         'widgetsnbextension'\
         'xlrd' \
-        # PYTORCH
-        "${PYTORCH}=${PYTORCH_VERSION}" \
-        # TENSORFLOW
-        "${TENSORFLOW}=${TENSORFLOW_VERSION}" \
-        "tensorflow-datasets" \ 
-        "tf2onnx" \
-        "onnx" \
-        "onnxruntime" \
         # ----        
     && \
     mkdir ~/.pip && \
     echo "[global]" >> ~/.pip/pip.conf && \
     echo "extra-index-url = https://repo.fury.io/mgiessing" >> ~/.pip/pip.conf && \
-    pip install --prefer-binary --quiet --no-cache-dir \
+    pip install --prefer-binary --no-cache-dir \
         ##################
         # pip packages
-        "elyra[all]==${ELYRA_VERSION}" \
+        "elyra==${ELYRA_VERSION}" \
         "librosa" \
         "trino" \
+        # Fix for elyra not getting installed due to:
+        # Found existing installation: termcolor 1.1.0
+        # ERROR: Cannot uninstall 'termcolor'. It is a distutils installed project and thus we cannot accurately determine which files belong to it which would lead to only a partial uninstall.
+        "termcolor==1.1.0" \
         #################
     && \
     jupyter lab build && \
     rm micromamba && \
     # Pin major.minor version of python
     mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
-    echo "conda=22.11.1" >> "${CONDA_DIR}/conda-meta/pinned" && \
     echo "${TENSORFLOW}=${TENSORFLOW_VERSION}" >> "${CONDA_DIR}/conda-meta/pinned" && \
     echo "${PYTORCH}=${PYTORCH_VERSION}" >> "${CONDA_DIR}/conda-meta/pinned" && \
-    # if [ "${TARGETARCH}" = "ppc64le" ]; then \
-    #     echo "https://opence.mit.edu/linux-ppc64le::arrow-cpp==7.0.0=py38hf2c8803_2_cpu" >> "${CONDA_DIR}/conda-meta/pinned" && \
-    #     echo "https://opence.mit.edu/linux-ppc64le::pyarrow==7.0.0=py38hfc345c5_2_cpu" >> "${CONDA_DIR}/conda-meta/pinned"; \
-    # fi && \
     jupyter notebook --generate-config && \
     mamba clean --all -f -y && \
     npm cache clean --force && \

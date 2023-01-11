@@ -4,10 +4,6 @@ auto_update_conda: false
 show_channel_urls: true
 channel_priority: flexible
 channels:
-  - huggingface
+  - https://ftp.osuosl.org/pub/open-ce/current/
   - https://repo.anaconda.com/pkgs/main
-  - https://repo.anaconda.com/pkgs/r
-  - rocketce
-  - mgiessing
-  - deepmodeling
-  - conda-forge
+  - https://repo.anaconda.com/pkgs/r 

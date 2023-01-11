@@ -226,12 +226,9 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'statsmodels' \
         'sympy' \
         'tensorboard' \
-        'tensorflow-addons' \
         'tensorflow-datasets' \
         'tensorflow-hub' \
-        'tensorflow-model-optimization' \
         'tensorflow-probability' \
-        'tensorflow-text' \
         'tf2onnx' \
         'torchvision' \
         'transformers' \

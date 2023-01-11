@@ -29,7 +29,7 @@ sudo systemctl enable --now docker
 ```
 2. Configure a [BuildX](https://docs.docker.com/build/buildx/) builder for multi-arch builds.
 On x86, just continue with the next step.  
-On ppx64le, do the following:
+On ppc64le, do the following:
 ```
 mkdir -p ~/.docker/cli-plugins
 TARGETARCH=$(uname -m)

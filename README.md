@@ -88,7 +88,7 @@ docker buildx build --build-arg NB_GID=0 --build-arg CUDA_VERSION=$CUDA_VERSION 
 ### Testing Mamba Installations
 1. Create an empty mamba environment, for example, by connecting into a mamba-enabled container:
 ```
-docker run -it quay.io/ibm/kubeflow-notebook-image-ppc64le:latest
+docker run -it quay.io/ibm/kubeflow-notebook-image-ppc64le:latest /bin/bash
 ```
 ...and by initializing an empty environment:
 ```

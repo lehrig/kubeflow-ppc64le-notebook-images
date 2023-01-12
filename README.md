@@ -41,6 +41,7 @@ chmod +x ~/.docker/cli-plugins/docker-buildx
 docker run --rm --privileged tonistiigi/binfmt:latest --install all
 ```
 Additionally, due to https://github.com/tonistiigi/binfmt/issues/118, you need to pass a Ubuntu-based base root image as build argument to the build (e.g., add this to the build command `--build-arg ROOT_CONTAINER=ubuntu:22.04`)
+
 3. Create, initialize, and use your multi-arch builder:
 ```
 docker buildx create --name mybuilder --use --bootstrap

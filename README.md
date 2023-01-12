@@ -83,3 +83,19 @@ For pushing from cache to your image registry, add to the docker/podman command:
 docker buildx build --build-arg NB_GID=0 --build-arg CUDA_VERSION=$CUDA_VERSION --build-arg ELYRA_VERSION=$ELYRA_VERSION --build-arg PYTHON_VERSION=$PYTHON_VERSION --build-arg PYTORCH_VERSION=$PYTORCH_VERSION --build-arg SUPPORT_GPU=$SUPPORT_GPU --build-arg TENSORFLOW_VERSION=$TENSORFLOW_VERSION -t $TARGET -f Dockerfile --platform linux/amd64,linux/ppc64le --push --cache-from=type=local,src=cache .
 ```
 
+### Testing Mamba Installations
+1. Create an empty mamba environment, for example, by connecting into a mamba-enabled container:
+```
+docker run -it quay.io/ibm/kubeflow-notebook-image-ppc64le:latest
+```
+...and by initializing an empty environment:
+```
+mamba create -n myenv
+mamba init
+/bin/bash
+mamba activate myenv
+```
+2. Experiment with your install configuration until stable, for example:
+```
+CONDA_OVERRIDE_CUDA="11.4.4" mamba install --override-channels -c https://ftp.osuosl.org/pub/open-ce/current/ -c https://repo.anaconda.com/pkgs/main python=3.9 pytorch=1.12.1 tensorflow=2.9.2 jupyter_client<7 jupyter_server=1.4.1 horovod 'huggingface::datasets>=2.1.0' opencv blas=*=openblas jupyterhub jupyterlab conda mamba pip 'conda-forge::nb_black' 'conda-forge::nodejs>=12.0.0' boto3 brotli dm-tree etils numpy orc pandas pillow transformers 'pynacl' 'regex' 'ujson' altair beautifulsoup4 bokeh bottleneck cloudpickle cython dask dill h5py ipympl ipywidgets matplotlib-base numba numexpr patsy protobuf pytables scikit-image scikit-learn scipy seaborn sqlalchemy statsmodels sympy widgetsnbextension xlrd tensorboard tensorflow-addons tensorflow-datasets tensorflow-hub tensorflow-model-optimization tensorflow-probability tensorflow-text torchvision tf2onnx onnx onnxruntime kedro py-xgboost matplotlib keras2onnx gensim jupyter_enterprise_gateway bcrypt arrow pyarrow 
+```

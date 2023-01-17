@@ -156,6 +156,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         --root-prefix="${CONDA_DIR}" \
         --prefix="${CONDA_DIR}" \
         --yes \
+        ############################################################
         # core packages (most dependencies)
         "${HOROVOD}" \
         "${PYTHON_SPECIFIER}" \
@@ -163,19 +164,26 @@ RUN mkdir "/home/${NB_USER}/work" && \
         "${TENSORFLOW}=${TENSORFLOW_VERSION}" \
         'blas=*=openblas' \
         'opencv' \
+        ############################################################
         # 3rd party conda channels (avoid adding such channels as defaults!)
         'conda-forge::nb_black' \
         'conda-forge::nodejs>=12.0.0' \
         'huggingface::datasets>=2.1.0' \
+        # Fix for 'Failed to launch ptxas'
+        # See: https://github.com/google/jax/discussions/6843
+        'nvidia::cuda-nvcc' \
+        ############################################################
         # package management
         'conda' \
         'mamba' \
         'pip' \
+        ############################################################
         # jupyter
         # see: https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
         'jupyterhub' \
         'jupyterlab' \
         'notebook' \
+        ############################################################
         # additional packages (alphabetical order)
         # mainly based on scipy-notebook; extended by some other common packages
         # see: https://github.com/jupyter/docker-stacks/blob/main/scipy-notebook/Dockerfile

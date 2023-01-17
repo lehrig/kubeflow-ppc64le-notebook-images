@@ -163,15 +163,15 @@ RUN mkdir "/home/${NB_USER}/work" && \
         "${PYTORCH}=${PYTORCH_VERSION}" \
         "${TENSORFLOW}=${TENSORFLOW_VERSION}" \
         'blas=*=openblas' \
+        # Fix for 'Failed to launch ptxas'
+        # See: https://github.com/google/jax/discussions/6843
+        'cudatoolkit-dev' \
         'opencv' \
         ############################################################
         # 3rd party conda channels (avoid adding such channels as defaults!)
         'conda-forge::nb_black' \
         'conda-forge::nodejs>=12.0.0' \
         'huggingface::datasets>=2.1.0' \
-        # Fix for 'Failed to launch ptxas'
-        # See: https://github.com/google/jax/discussions/6843
-        'nvidia::cuda-nvcc' \
         ############################################################
         # package management
         'conda' \

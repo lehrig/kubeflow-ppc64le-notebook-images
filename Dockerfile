@@ -19,12 +19,12 @@ ARG NB_UID="1000"
 ARG NB_GID="100"
 # Pin python version here, or set it to "default"
 ARG PYTHON_VERSION=3.9
-ARG PYTORCH_VERSION=1.12.1
+ARG PYTORCH_VERSION=1.13.0
 ARG SUPPORT_GPU=true
 # Arch is automatically provided by buildx
 # See: https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
-ARG TENSORFLOW_VERSION=2.9.2
+ARG TENSORFLOW_VERSION=2.10.1
 
 ENV CONDA_DIR=/opt/conda \
     SHELL=/bin/bash \
@@ -145,9 +145,8 @@ RUN mkdir "/home/${NB_USER}/work" && \
     fi && \
     if [ $SUPPORT_GPU=true ]; then TENSORFLOW="tensorflow" && PYTORCH="pytorch"; else TENSORFLOW="tensorflow-cpu" && PYTORCH="pytorch-cpu"; fi && \
     if [ "${TARGETARCH}" = "ppc64le" ]; then \
-        HOROVOD="horovod=0.25.0"; \
+        HOROVOD="horovod=0.26.1"; \
     else \
-        if [ "${TENSORFLOW_VERSION}" = "2.9.2" ]; then TENSORFLOW_VERSION=2.9.1; fi && \
         HOROVOD='deepmodeling::horovod==0.25.0=horovod-0.25.0-py38h6a4de79_0'; \
     fi && \
     # Install the packages

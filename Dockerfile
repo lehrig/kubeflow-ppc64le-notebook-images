@@ -147,6 +147,8 @@ RUN mkdir "/home/${NB_USER}/work" && \
     if [ "${TARGETARCH}" = "ppc64le" ]; then \
         HOROVOD="horovod=0.26.1"; \
     else \
+        if [ "${TENSORFLOW_VERSION}" = "2.9.2" ]; then TENSORFLOW_VERSION=2.9.1; fi && \
+        if [ "${TENSORFLOW_VERSION}" = "2.10.1" ]; then TENSORFLOW_VERSION=2.10.0; fi && \
         HOROVOD='deepmodeling::horovod==0.25.0=horovod-0.25.0-py38h6a4de79_0'; \
     fi && \
     # Install the packages

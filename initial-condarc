@@ -4,6 +4,6 @@ auto_update_conda: false
 show_channel_urls: true
 channel_priority: flexible
 channels:
-  - https://ftp.osuosl.org/pub/open-ce/1.8.0/
+  - http://ausgsa.ibm.com/gsa/ausgsa/projects/o/open-ce/conda/Open-CE-r1.8/1.8.0/opence-cuda-11.2/
   - https://repo.anaconda.com/pkgs/main
   - https://repo.anaconda.com/pkgs/r 

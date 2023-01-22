@@ -10,7 +10,7 @@ ARG ROOT_CONTAINER=quay.io/almalinux/almalinux:8.6
 FROM $ROOT_CONTAINER
 LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 
-ARG CUDA_VERSION=11.4.4
+ARG CUDA_VERSION=11.2.2
 ARG ELYRA_VERSION=3.14.1
 # highest kubeflow-supported release
 ARG KUBECTL_VERSION=v1.24.8
@@ -19,7 +19,7 @@ ARG NB_UID="1000"
 ARG NB_GID="100"
 # Pin python version here, or set it to "default"
 ARG PYTHON_VERSION=3.9
-ARG PYTORCH_VERSION=1.13.0
+ARG PYTORCH_VERSION=1.10.2
 ARG SUPPORT_GPU=true
 # Arch is automatically provided by buildx
 # See: https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
@@ -164,9 +164,11 @@ RUN mkdir "/home/${NB_USER}/work" && \
         "${PYTORCH}=${PYTORCH_VERSION}" \
         "${TENSORFLOW}=${TENSORFLOW_VERSION}" \
         'blas=*=openblas' \
-        # Fix for 'Failed to launch ptxas'
+        # This fixes 'Failed to launch ptxas'
+        # BUT causes 'Could not load dynamic library 'libcudart.so.11.0''
+        # -> deactivated for now
         # See: https://github.com/google/jax/discussions/6843
-        'cudatoolkit-dev' \
+        # 'cudatoolkit-dev' \
         'opencv' \
         ############################################################
         # 3rd party conda channels (avoid adding such channels as defaults!)

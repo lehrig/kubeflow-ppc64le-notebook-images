@@ -54,11 +54,11 @@ docker buildx ls
 git clone https://github.com/lehrig/kubeflow-ppc64le-notebook-images
 cd kubeflow-ppc64le-notebook-images
 
-export CUDA_VERSION=11.4.4
+export CUDA_VERSION=11.2.2
 export ELYRA_VERSION=3.14.1
 export MINOR_RELEASE=0
 export PYTHON_VERSION=3.9
-export PYTORCH_VERSION=1.13.0
+export PYTORCH_VERSION=1.10.2
 export SUPPORT_GPU=true
 export TENSORFLOW_VERSION=2.10.1
 

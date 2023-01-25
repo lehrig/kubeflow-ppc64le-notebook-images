@@ -175,6 +175,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'conda-forge::nb_black' \
         'conda-forge::nodejs>=12.0.0' \
         'huggingface::datasets>=2.1.0' \
+        'fastai::fastai' \
         ############################################################
         # package management
         'conda' \
@@ -195,6 +196,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'bcrypt' \
         'beautifulsoup4' \
         'bokeh' \
+        # needed as s3/minio client
         'boto3' \
         'bottleneck' \
         'brotli' \
@@ -239,6 +241,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'tensorboard' \
         'tensorflow-datasets' \
         'tensorflow-hub' \
+        'tensorflow-io' \
         'tensorflow-probability' \
         'tf2onnx' \
         'torchvision' \

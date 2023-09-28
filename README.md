@@ -54,13 +54,13 @@ docker buildx ls
 git clone https://github.com/lehrig/kubeflow-ppc64le-notebook-images
 cd kubeflow-ppc64le-notebook-images
 
-export CUDA_VERSION=11.2.2
-export ELYRA_VERSION=3.14.1
+export CUDA_VERSION=11.8.0
+export ELYRA_VERSION=3.15.0
 export MINOR_RELEASE=0
 export PYTHON_VERSION=3.9
-export PYTORCH_VERSION=1.10.2
+export PYTORCH_VERSION=2.0.1
 export SUPPORT_GPU=true
-export TENSORFLOW_VERSION=2.10.1
+export TENSORFLOW_VERSION=2.12.0
 
 export IMAGE=quay.io/ibm/kubeflow-notebook-image-ppc64le
 export TAG=elyra${ELYRA_VERSION}-py${PYTHON_VERSION}-tf${TENSORFLOW_VERSION}-pt${PYTORCH_VERSION}-v${MINOR_RELEASE}

@@ -10,8 +10,9 @@ ARG ROOT_CONTAINER=quay.io/almalinux/almalinux:8.6
 FROM $ROOT_CONTAINER
 LABEL maintainer="Sebastian Lehrig <sebastian.lehrig1@ibm.com>"
 
-ARG CUDA_VERSION=11.2.2
-ARG ELYRA_VERSION=3.14.1
+# see available https://anaconda.org/rocketce/cudatoolkit version
+ARG CUDA_VERSION=11.8.0
+ARG ELYRA_VERSION=3.15.0
 # highest kubeflow-supported release
 ARG KUBECTL_VERSION=v1.24.8
 ARG NB_USER="jovyan"
@@ -19,12 +20,12 @@ ARG NB_UID="1000"
 ARG NB_GID="100"
 # Pin python version here, or set it to "default"
 ARG PYTHON_VERSION=3.9
-ARG PYTORCH_VERSION=1.10.2
+ARG PYTORCH_VERSION=2.0.1
 ARG SUPPORT_GPU=true
 # Arch is automatically provided by buildx
 # See: https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
-ARG TENSORFLOW_VERSION=2.10.1
+ARG TENSORFLOW_VERSION=2.12.0
 
 ENV CONDA_DIR=/opt/conda \
     SHELL=/bin/bash \
@@ -145,11 +146,11 @@ RUN mkdir "/home/${NB_USER}/work" && \
     fi && \
     if [ $SUPPORT_GPU=true ]; then TENSORFLOW="tensorflow" && PYTORCH="pytorch"; else TENSORFLOW="tensorflow-cpu" && PYTORCH="pytorch-cpu"; fi && \
     if [ "${TARGETARCH}" = "ppc64le" ]; then \
-        HOROVOD="horovod=0.26.1"; \
+        HOROVOD="horovod=0.28.0"; \
     else \
         if [ "${TENSORFLOW_VERSION}" = "2.9.2" ]; then TENSORFLOW_VERSION=2.9.1; fi && \
         if [ "${TENSORFLOW_VERSION}" = "2.10.1" ]; then TENSORFLOW_VERSION=2.10.0; fi && \
-        HOROVOD='deepmodeling::horovod==0.25.0=horovod-0.25.0-py38h6a4de79_0'; \
+        HOROVOD='deepmodeling::horovod==0.27.0=horovod-0.27.0-py39h50483eb_0'; \
     fi && \
     # Install the packages
     # Conda see: https://conda-forge.org/docs/user/tipsandtricks.html#installing-cuda-enabled-packages-like-tensorflow-and-pytorch
@@ -172,6 +173,8 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'opencv' \
         ############################################################
         # 3rd party conda channels (avoid adding such channels as defaults!)
+        'conda-forge::accelerate' \
+        'conda-forge::evidently' \
         'conda-forge::nb_black' \
         'conda-forge::nodejs>=12.0.0' \
         'huggingface::datasets>=2.1.0' \
@@ -206,11 +209,15 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'dill' \
         'dm-tree' \
         'etils' \
+        'fastapi' \
         'gensim' \
         'h5py' \
         'ipympl'\
         'ipywidgets' \
         'jupyter_enterprise_gateway' \
+        'libgfortran5' \
+        'lightgbm' \
+        'imbalanced-learn' \
         'kedro' \
         'matplotlib' \
         'matplotlib-base' \
@@ -228,13 +235,16 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'protobuf' \
         'py-xgboost' \
         'pyarrow' \
+        'pydot' \
         'pynacl' \
+        'pyod' \
         'pytables' \
         'regex' \
         'scikit-image' \
         'scikit-learn' \
         'scipy' \
         'seaborn' \
+        'sklearn-pandas' \
         'sqlalchemy' \
         'statsmodels' \
         'sympy' \
@@ -248,6 +258,7 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'transformers' \
         'ujson' \
         'widgetsnbextension'\
+        'xgboost' \
         'xlrd' \
         # ----        
     && \
@@ -257,13 +268,18 @@ RUN mkdir "/home/${NB_USER}/work" && \
     pip install --prefer-binary --no-cache-dir \
         ##################
         # pip packages
+        "alibi" \
         "elyra==${ELYRA_VERSION}" \
+        "kserve" \
         "librosa" \
+        "openai-whisper" \
         "trino" \
         # Fix for elyra not getting installed due to:
         # Found existing installation: termcolor 1.1.0
         # ERROR: Cannot uninstall 'termcolor'. It is a distutils installed project and thus we cannot accurately determine which files belong to it which would lead to only a partial uninstall.
         "termcolor==1.1.0" \
+        # https://github.com/microsoft/azuredatastudio/issues/24436#issuecomment-1723328100
+        "traitlets==5.9.0" \
         #################
     && \
     jupyter lab build && \

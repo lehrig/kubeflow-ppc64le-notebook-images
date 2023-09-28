@@ -72,51 +72,45 @@ then
     # Custom Kubeflow components
     elyra-metadata create component-catalogs \
       --name="collect" \
-      --description="Collect data" \
+      --description="Integrate customer mission critical data" \
       --runtime_type="KUBEFLOW_PIPELINES" \
-      --display_name="Data Collection" \
-      --categories='["Data Collection"]' \
+      --display_name="Integrate Data" \
+      --categories='["1) Integrate Data"]' \
       --paths="[ \
         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-collection/download-and-extract-from-url/component.yaml', \
-	'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-collection/load-dataset/component.yaml'
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-collection/load-dataframe-via-trino/component.yaml', \
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-transformation/run-spark-job/component.yaml', \
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/monitoring/create-data-quality-report-with-evidently/component.yaml', \
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-transformation/convert-speech-to-text/component.yaml', \
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-collection/load-huggingface-dataset/component.yaml'
         ]" \
       --schema_name="url-catalog"
        
     elyra-metadata create component-catalogs \
-      --name="transform" \
-      --description="Transform data" \
-      --runtime_type="KUBEFLOW_PIPELINES" \
-      --display_name="Data Transform" \
-      --categories='["Data Transform"]' \
-      --paths="[ \
-        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/data-transformation/run-spark-job/component.yaml'
-        ]" \
-      --schema_name="url-catalog"
-
-    elyra-metadata create component-catalogs \
       --name="build" \
-      --description="Build models" \
+      --description="Train & fine-tune AI models" \
       --runtime_type="KUBEFLOW_PIPELINES" \
-      --display_name="Model Building" \
-      --categories='["Model Building"]' \
+      --display_name="Train & fine-tune AI models" \
+      --categories='["2) Train/Fine-Tune"]' \
       --paths="[ \
-        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/convert-to-onnx/component.yaml', \
-	'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/plot-confusion-matrix/component.yaml', \
-	'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/train-model-job/component.yaml', \
-        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/upload-model/component.yaml'
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/monitor-training/component.yaml', \
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/train-model-job/component.yaml', \
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/plot-confusion-matrix/component.yaml', \
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/upload-model/component.yaml', \
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-building/convert-to-onnx/component.yaml'
         ]" \
       --schema_name="url-catalog"
 
     elyra-metadata create component-catalogs \
       --name="deployment" \
-      --description="Deploying models for model serving" \
+      --description="Inference close to mission critical data" \
       --runtime_type="KUBEFLOW_PIPELINES" \
-      --display_name="Model Deployment" \
-      --categories='["Model Deployment"]' \
+      --display_name="Infer Data" \
+      --categories='["3) Infer Data"]' \
       --paths="[ \
         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-deployment/deploy-model-with-kserve/component.yaml', \
         'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-deployment/deploy-model-with-tfserving/component.yaml', \
-	'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-deployment/deploy-model-with-triton/component.yaml'
+        'https://raw.githubusercontent.com/lehrig/kubeflow-ppc64le-components/main/model-deployment/deploy-model-with-triton/component.yaml'
 	]" \
       --schema_name="url-catalog"
 
@@ -145,7 +139,13 @@ then
       --cos_password=$MINIO_PWD \
       --cos_bucket=kf-pipelines-dev \
       --tags="['kfp', 'dev']"
-      
+    
+    #############################################################
+    # Add Marvin's Fury wheel repository for ppc64le wheel installs
+    mkdir ~/.pip && \
+    echo "[global]" >> ~/.pip/pip.conf && \
+    echo "extra-index-url = https://repo.fury.io/mgiessing" >> ~/.pip/pip.conf
+ 
     # HotFix for https://github.com/elyra-ai/elyra/issues/2725
     touch /home/jovyan/.local/share/jupyter/metadata/runtimes/hotfix2725.fix
     rm -f /home/jovyan/.local/share/jupyter/metadata/runtimes/hotfix2725.fix

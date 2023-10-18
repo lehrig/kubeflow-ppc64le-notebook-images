@@ -1,3 +1,4 @@
+atop
 bind-utils
 bzip2
 ca-certificates
@@ -10,6 +11,7 @@ gcc-c++
 gcc-toolset-11-gcc-gfortran
 git
 glibc-langpack-en
+htop
 inkscape
 ffmpeg
 jq
@@ -23,8 +25,10 @@ libxml2-devel
 libxslt-devel
 make
 nano
+nmon
 openssh-server
 openssl3
+perf
 psmisc
 sudo
 telnet

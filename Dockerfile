@@ -181,7 +181,8 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'fastai::fastai' \
         ############################################################
         # package management
-        'conda' \
+        # temporary fix for https://github.com/mamba-org/mamba/issues/2882#issuecomment-1746314832
+        'conda<23.9.0' \
         'mamba' \
         'pip' \
         ############################################################
@@ -213,7 +214,8 @@ RUN mkdir "/home/${NB_USER}/work" && \
         'gensim' \
         'h5py' \
         'ipympl'\
-        'ipywidgets' \
+        # temporary fix for https://github.com/jupyterlab/jupyterlab/issues/12977
+        'ipywidgets==7.7.2' \
         'jupyter_enterprise_gateway' \
         'libgfortran5' \
         'lightgbm' \

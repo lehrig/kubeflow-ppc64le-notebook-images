@@ -56,7 +56,7 @@ cd kubeflow-ppc64le-notebook-images
 
 export CUDA_VERSION=11.8.0
 export ELYRA_VERSION=3.15.0
-export MINOR_RELEASE=0
+export MINOR_RELEASE=3
 export PYTHON_VERSION=3.9
 export PYTORCH_VERSION=2.0.1
 export SUPPORT_GPU=true

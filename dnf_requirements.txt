@@ -6,6 +6,8 @@ cmake
 compat-openssl10
 curl
 dvipng
+epel-release
+fuse-sshfs
 gcc
 gcc-c++
 gcc-toolset-11-gcc-gfortran
